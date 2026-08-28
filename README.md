@@ -29,12 +29,10 @@ A good skill typically has:
 
 ## Installation
 
-Copy the skill folder into `~/.agents/skills`, keeping the relative structure intact:
+Install with a single command:
 
 ```bash
-git clone https://github.com/<your-username>/pear-skills.git
-mkdir -p ~/.agents/skills
-cp -r pear-skills/premium-frontend-design ~/.agents/skills/
+npx skills add PearNoDec/pear-skills
 ```
 
 After restarting your session, just describe the task in natural language, e.g. "redesign this SaaS landing page".
