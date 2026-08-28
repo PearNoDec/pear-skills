@@ -29,12 +29,10 @@ Skill 是一种模块化的智能体能力扩展：一个以 `SKILL.md` 为入�
 
 ## 安装使用
 
-将技能文件夹完整复制到 `~/.agents/skills` 下即可，保持相对结构不变：
+一条命令即可安装：
 
 ```bash
-git clone https://github.com/<your-username>/pear-skills.git
-mkdir -p ~/.agents/skills
-cp -r pear-skills/premium-frontend-design ~/.agents/skills/
+npx skills add PearNoDec/pear-skills
 ```
 
 重启会话后，直接用自然语言描述任务即可触发，例如"帮我重新设计这个 SaaS 的落地页"。
