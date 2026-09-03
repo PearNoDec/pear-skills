@@ -1,254 +1,84 @@
 # SaaS Mode
 
-## Mission
-
-SaaS design must make users understand the product and believe it will improve their workflow.
-
-A SaaS system often contains two different design surfaces:
-
-1. Marketing surface
-2. Authenticated product surface
-
-They must share a brand system but should not share the same visual intensity.
+A SaaS system contains two different design surfaces: the **marketing surface** and the **authenticated product surface**. They share a brand system. They must not share visual intensity.
 
 ---
 
 # SaaS Marketing Surface
 
-## Priority
+**Priority: value clarity → product understanding → proof → activation → conversion.**
 
-**Value clarity -> product understanding -> proof -> activation -> conversion**
+## Section selection
 
-Visitors should quickly understand:
+A visitor needs to learn: what the product does, who it is for, what problem it solves, how the workflow works, why it is different, what outcome it creates, and how to start. Assign each to a section; drop sections that answer nothing.
 
-- What the product does
-- Who it is for
-- What problem it solves
-- How the workflow works
-- Why it is better or different
-- What outcome it creates
-- How to start
-
-## Possible page architecture
-
-- Header
-- Hero
-- Product preview
-- Social proof
-- Problem framing
-- Solution
-- Core workflow
-- Feature stories
-- Integrations
-- Use cases
-- Metrics
-- Testimonials
-- Security
-- Pricing
-- FAQ
-- Final CTA
-- Footer
-
-Do not include sections solely because a landing-page template expects them.
+Candidates — header, hero, product preview, social proof, problem framing, solution, core workflow, feature stories, integrations, use cases, metrics, testimonials, security, pricing, FAQ, final CTA, footer — but including all seventeen because a template expects them is exactly the failure mode. Most strong SaaS pages run **seven to ten**.
 
 ## Product-first storytelling
 
-The real product should usually be one of the primary visual assets.
+The real product should usually be one of the primary visual assets: real UI, real workflows, real states, real outputs, interactive demonstrations, annotated flows. Do not hide the product behind abstract illustrations.
 
-Prefer:
-
-- Real UI
-- Real workflows
-- Real states
-- Real outputs
-- Interactive demonstrations
-- Annotated product flows
-
-Avoid hiding the product behind endless abstract illustrations.
+If the product is not ready to show, show a real *output* — a document, a result, a report — rather than a fabricated dashboard mockup.
 
 ## Feature communication
 
-Avoid repeating three-card feature grids.
+The user should understand *how* a feature works, not merely that it exists. That rules out the repeated three-card grid, because a card can only assert.
 
-Prefer:
-
-- Sticky product showcase
-- Tabbed interactive demo
-- Step-by-step workflow
-- Full-width product preview
-- Alternating editorial sections
-- Before / after
-- Data transformation story
-- Scenario-based demonstration
-
-The user should understand how a feature works, not merely that it exists.
+Pick the form from the content's shape: a sticky product showcase for a single deep capability, a tabbed demo for parallel ones, a step-by-step workflow for a sequence, alternating editorial sections for a narrative, before/after for a transformation. **A comparison, a sequence and a list are three different shapes; giving them all a three-column grid erases the difference.**
 
 ## Pricing
 
-Pricing should reduce decision friction.
+Pricing exists to reduce decision friction. It needs explicit limits, a recommended plan, a comparison a buyer can actually decide from, and an enterprise path if one exists. A monthly/annual toggle and an FAQ placed at the point of friction both help.
 
-Consider:
-
-- Monthly / annual toggle
-- Recommended plan
-- Clear limits
-- Feature comparison
-- Usage-based explanation
-- Enterprise path
-- FAQ near decision friction
-
-Do not obscure actual pricing for decorative layout reasons unless the business model intentionally requires sales contact.
-
-## Trust
-
-Use relevant trust signals:
-
-- Customers
-- Quantified outcomes
-- Case studies
-- Security
-- Compliance
-- Reliability
-- Integrations
-- Testimonials
+Do not obscure real pricing for decorative reasons unless the business model genuinely requires a sales conversation.
 
 ---
 
 # SaaS Authenticated Product Surface
 
-## Priority
+**Priority: task success → speed → clarity → consistency → discoverability.**
 
-**Task success -> speed -> clarity -> consistency -> discoverability**
-
-Marketing-site effects should be reduced significantly.
+Marketing-surface effects come down hard here. Set `[data-surface="admin"]`-style motion overrides from the token layer rather than removing animations one at a time.
 
 ## Navigation
 
-Choose based on product complexity:
-
-- Top navigation
-- Sidebar
-- Hybrid navigation
-- Workspace switcher
-- Command palette
-
-Consider hierarchy for:
-
-- Workspace
-- Project
-- Main modules
-- Notifications
-- Search
-- Help
-- Settings
-- Account
-
-Do not flatten every feature into one navigation level.
+Choose from top nav, sidebar, hybrid, workspace switcher and command palette — based on **product complexity, not fashion**. The decision that matters is hierarchy: workspace, project, modules, notifications, search, help, settings, account. Flattening every feature into one navigation level is the failure; so is nesting three levels deep when there are nine destinations.
 
 ## Onboarding
 
-Design first-use behavior intentionally.
+Design first-use deliberately: a setup wizard, a checklist, sample data, a product tour, contextual hints, progressive disclosure, template selection, or a guided first task.
 
-Possible tools:
+The rule: **an empty dashboard with no direction is a failed first run.** The first session is the single best onboarding moment the product will ever get, and an empty state that says "No data" wastes it.
 
-- Setup wizard
-- Checklist
-- Sample data
-- Product tour
-- Contextual hint
-- Progressive disclosure
-- Template selection
-- Guided first task
+## Dashboard and data visualization
 
-Avoid an empty dashboard with no direction.
+A dashboard prioritizes important KPIs, trends, anomalies, action items and next best actions. Do not fill space with charts to look analytical.
 
-## Dashboard
+**Every chart answers a question** — what happened, is this improving, what is abnormal, which segment is responsible, what should I do now. A chart nobody acts on should be removed.
 
-A dashboard should prioritize:
-
-- Important KPI
-- Trend
-- Anomaly
-- Action items
-- Next best action
-
-Do not fill space with charts merely to make the interface appear analytical.
-
-## Data visualization
-
-Every chart should answer a question.
-
-Examples:
-
-- What happened?
-- Is performance improving?
-- What is abnormal?
-- Which segment is responsible?
-- What should the user do next?
-
-Avoid decorative visualizations with no operational value.
+Chart selection, KPI anatomy, series color roles, chart states and the table fallback are in `standards/data-visualization.md`. The short version: series colors are semantic roles tuned per theme, status hues keep their meaning, no series is color-alone, and a chart palette tuned on white is the most common thing to break in dark mode.
 
 ## Tables
 
-Tables are often more important than cards in serious SaaS products.
+Tables are usually more important than cards in a serious SaaS product. The full state matrix, accessibility contract and small-screen strategy are in `standards/data-grid.md` — read it rather than re-deriving the feature list.
 
-Support when relevant:
+## Shell, overlays, forms
 
-- Sorting
-- Filtering
-- Search
-- Selection
-- Bulk action
-- Sticky header
-- Column visibility
-- Column resize
-- Pagination
-- Row actions
-- Empty state
-- Loading
-- Error
-- Responsive behavior
+The application shell (`standards/app-shell.md`), the dialog / drawer / toast / command-palette contracts (`standards/overlays-navigation.md`) and the form contract (`standards/forms.md`) apply to the product surface in full. The command palette is usually the single most valuable feature to add to a SaaS product that lacks one.
 
-## Application motion
+## Motion and states
 
-Prefer subtle, fast motion, often around 100-250ms for routine component feedback.
+Routine component feedback lands around 100–250ms. Use motion for menus, popovers, dialogs, drawers, navigation state, success feedback, loading and row expansion. Never make a productivity workflow wait for an animation.
 
-Use motion for:
+The required states for an application surface are in `SKILL.md` §7.4. Product-specific additions worth designing here: partial error, offline, upgrade-required, processing, and archived/draft where the domain has them.
 
-- Menu and popover transitions
-- Dialog / drawer transitions
-- Navigation state
-- Success feedback
-- Loading
-- Row expansion
-- Context changes
+## Worked example
 
-Do not make productivity workflows wait for animation.
-
-## Required states
-
-Consider:
-
-- First run
-- Loading
-- Empty
-- No result
-- Error
-- Partial error
-- Offline
-- Upgrade required
-- Permission restricted
-- Processing
-- Success
-- Archived / draft when relevant
-
-## Avoid
-
-- Marketing animation inside dense product workflows
-- Giant decorative cards
-- Very low information density
-- Excessive radius
-- Glass panels for everything
-- Dashboard clutter
-- Missing empty or error states
-- Weak navigation hierarchy
+> **Brief:** "Build an AI meeting assistant website and dashboard."
+>
+> **Mode:** hybrid — public site SAAS Marketing, authenticated app SAAS Product.
+> **Marketing direction:** show the actual transformation — meeting → transcript → structured decisions → assigned tasks → searchable knowledge. That pipeline is the product's own data structure, so it becomes the hero and the recurring signature, instead of a decorative AI orb.
+> **Product IA:** Meetings · Search · Tasks · Shared knowledge · Workspace settings.
+> **Dashboard:** recent meetings, unresolved actions, searchable knowledge — not decorative analytics.
+> **Motion:** marketing medium, product low.
+> **States that must exist:** first meeting not yet recorded, transcript processing, transcription failed, empty search, no workspace permission.

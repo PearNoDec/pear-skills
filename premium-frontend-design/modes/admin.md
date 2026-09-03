@@ -2,273 +2,91 @@
 
 ## Mission
 
-Admin products are working environments.
+Admin products are working environments. Optimize for **efficiency → clarity → density → reliability → error prevention → consistency.**
 
-Optimize for:
-
-**Efficiency -> clarity -> information density -> reliability -> error prevention -> consistency.**
-
-Visual sophistication should come from hierarchy, spacing, typography, state design and interaction quality rather than decorative spectacle.
+Visual sophistication comes from hierarchy, spacing, typography, state design and interaction quality — never from decorative spectacle. The user is here for eight hours and knows this software better than you do.
 
 ## Application shell
 
-Typical structure may include:
+A conventional shell is a feature, not a failure of imagination: sidebar, topbar, breadcrumb, page header, context actions, filter/search area, main workspace, secondary panel, drawer, dialog, toast layer. Predictability *is* the design goal — an operator who has to relearn navigation loses more than a novel layout ever gains.
 
-- Sidebar
-- Topbar
-- Breadcrumb
-- Page header
-- Context actions
-- Filter / search area
-- Main workspace
-- Secondary panel
-- Drawer
-- Dialog
-- Toast / notification layer
+**Sidebar.** Grouped navigation with a clear active state, collapse support, tenant/workspace context, and permission-aware items. Avoid icon-only navigation in a complex product unless the labels stay discoverable.
 
-Use conventional patterns when they increase speed and predictability.
+**Page header.** Compact, answering four questions: where am I, what is this, what is its state, what is the primary action. A hero-scale header inside a workspace steals working space — see `standards/anti-patterns.md`.
 
-## Sidebar
+## Density
 
-Support when relevant:
+Do not force consumer-app whitespace onto a professional tool. Dense CRM, ERP, BI and operations products benefit from a **user-selectable** density (compact / default / comfortable), implemented as the `--density` multiplier in `assets/tokens.schema.css` so one attribute resizes every control at once.
 
-- Grouped navigation
-- Active state
-- Nested navigation
-- Collapsed mode
-- Workspace or tenant context
-- Permission-aware items
-- Compact mode
+Set density from the work, not from taste: how many rows does the operator need to see without scrolling to make a decision?
 
-Avoid icon-only navigation for complex products unless labels remain easily discoverable.
+## Data grid
 
-## Page header
+The most important component in the product. Its state matrix, accessibility contract, selection and bulk-action rules, permission gating and small-screen strategy are in **`standards/data-grid.md`**.
 
-A page header should answer:
+Two decisions belong here rather than there:
 
-- Where am I?
-- What does this page represent?
-- What is the relevant state?
-- What is the primary action?
-
-Possible elements:
-
-- Breadcrumb
-- Title
-- Description
-- Status
-- Primary action
-- Secondary actions
-- Context menu
-
-## Information density
-
-Do not force consumer-app whitespace onto professional enterprise tools.
-
-Possible density modes:
-
-- Comfortable
-- Default
-- Compact
-
-Dense CRM, ERP, BI and operations products may benefit from user-selectable density.
-
-## Table / Data Grid
-
-Treat the data grid as a first-class component.
-
-Consider:
-
-- Sort
-- Filter
-- Search
-- Resize
-- Pin
-- Hide
-- Reorder
-- Select
-- Select all
-- Bulk action
-- Inline edit
-- Row action
-- Pagination
-- Infinite loading
-- Virtualization
-- Export
-- Saved views
-- Loading
-- Empty
-- Error
-- Permission
-
-Do not convert structured data into cards merely because cards appear more modern.
+- **Never convert structured data into cards** because cards look more modern. Cards destroy comparability, which is the entire point of tabular data.
+- **Choose the feature set by need, not by catalog.** Sort, filter, search and pagination are table stakes. Column resize/pin/reorder, saved views, inline edit, virtualization and export are each a real cost — add the ones this operator's workflow actually requires.
 
 ## Filters
 
-Professional filtering may require:
+The rule: **the current filter state must always be readable from the screen.** Visible active filters, a count, and a clear-all. A filter bar that does not show what is filtered produces support tickets about "missing" data.
 
-- Quick filters
-- Advanced filters
-- Multi-condition rules
-- Saved views
-- Date range
-- Status
-- Owner
-- Tag
-- Search
-- Active-filter count
-- Clear all
-
-Current filter state should always be understandable.
+Beyond that, scale to the work: quick filters for the common cases, advanced multi-condition rules where the domain needs them, and saved views for anything an operator does daily. Saved views are usually the highest-value feature in an operations tool and the most often omitted.
 
 ## Forms
 
-Complex forms require information architecture.
+The contract — layout, validation timing, accessibility, input attributes, IME handling, autosave versus unsaved-changes — is in **`standards/forms.md`**. The two decisions that belong here:
 
-Support:
+Complex forms need information architecture, not just fields. Group into sections; use tabs, an accordion, a stepper or side navigation once the form exceeds a screen. An endless unstructured column of inputs is the default failure.
 
-- Labels
-- Supporting descriptions
-- Required state
-- Validation
-- Error state
-- Success state
-- Disabled state
-- Dependent fields
-- Autosave where safe
-- Unsaved-change warnings
-- Grouped sections
+Every field needs a visible label, a description where the expectation is not obvious, an explicit required/optional signal (mark whichever is rarer), and validation that names the field and the fix. Dependent fields, autosave where it is safe, and unsaved-change warnings where it is not.
 
-Long forms may use:
+Copy rules — helper text before the mistake, errors that state the fix — are in `standards/content-copy.md`.
 
-- Sections
-- Tabs
-- Accordion
-- Stepper
-- Side navigation
+## Bulk and destructive actions
 
-Avoid an endless unstructured column of fields.
+Design bulk workflows explicitly: select all, bulk edit, assign, export, status change, archive, delete. These are why the product exists; treating them as an afterthought on top of a single-row UI is the most common admin design failure.
 
-## Bulk actions
-
-Design bulk workflows explicitly.
-
-Examples:
-
-- Select all
-- Bulk edit
-- Bulk assign
-- Bulk export
-- Bulk status change
-- Bulk archive
-- Bulk delete
-
-Destructive operations should clearly communicate scope and require appropriate confirmation.
+Destructive operations state **scope and reversibility** in the button and the confirmation: "Delete 12 orders? This cannot be undone." Not "Are you sure?"
 
 ## Permission states
 
-Design for:
+Design read-only, no-access, partial-access, role-restricted and feature-restricted states into the UI. **Disabled with a reason beats hidden** — a hidden control reads as a bug to the user who expected it.
 
-- Read-only
-- No access
-- Partial access
-- Role restrictions
-- Feature restrictions
-
-Do not rely solely on backend errors to explain permission problems.
+Never let a permission failure arrive as a backend error after the click.
 
 ## Dashboard
 
-An operations dashboard should emphasize:
+An operations dashboard surfaces critical KPIs, anomalies, risks, work requiring attention, trends and actionable queues. Every widget answers a business question; a widget that only occupies grid space should be removed. Chart selection, KPI anatomy, series color roles and chart states: `standards/data-visualization.md`.
 
-- Critical KPI
-- Anomalies
-- Risks
-- Work requiring attention
-- Trends
-- Actionable queues
+## Shell
 
-A widget should answer a business question rather than merely occupy grid space.
+The sidebar / header / content-region engineering — one scroller, `min-height: 0`, `100dvh`, sticky offsets, portaled overlays — is `standards/app-shell.md`. Dialog, drawer, menu, toast and command-palette contracts are `standards/overlays-navigation.md`. In a Chinese 中后台 the stack is usually Ant Design or Element Plus; `standards/stack-adapters.md` maps the token layer onto them without a second source of truth.
 
-## Color
+## Color and motion
 
-Use color primarily for:
+Color carries brand, hierarchy, status, risk and selection — nothing else. Keep success/warning/error/info semantics rigidly consistent, and make sure the brand hue does not collide with a status hue (see the note in `assets/token-presets.css`). Do not turn the application into a rainbow of competing states.
 
-- Brand recognition
-- Hierarchy
-- Status
-- Risk
-- Selection
+Motion is fast and restrained: dropdowns, drawers, dialogs, toasts, tabs, row expansion, navigation. Nothing that makes a repeated action wait.
 
-Keep semantic status colors consistent:
+## Efficiency features
 
-- Success
-- Warning
-- Error
-- Info
-
-Do not turn the application into a rainbow of competing states.
-
-## Motion
-
-Routine transitions should generally be fast and restrained.
-
-Use for:
-
-- Dropdowns
-- Drawers
-- Dialogs
-- Toasts
-- Tabs
-- Row expansion
-- Navigation
-
-Avoid large scroll animation, WebGL, cinematic transitions or heavy parallax in normal operations workflows.
-
-## Professional efficiency tools
-
-Consider when appropriate:
-
-- Keyboard shortcuts
-- Command palette
-- Quick search
-- Saved views
-- Recent items
-- Favorites
-- Bulk actions
-- Inline edit
-- Context menus
-
-These often create more product value than decorative visuals.
+Keyboard shortcuts, a command palette, quick search, saved views, recent items, favorites, bulk actions, inline edit and context menus routinely create more product value than any visual work on the same screen. If there is budget for one "impressive" feature in an admin tool, spend it here.
 
 ## Responsive strategy
 
-Determine whether the product is:
+Decide explicitly which the product is — fully mobile capable, tablet optimized, mobile limited to critical tasks, or desktop first — and design to that answer. Do not squeeze every desktop column into a phone viewport. Table strategies for small screens are in `standards/data-grid.md`.
 
-- Fully mobile capable
-- Tablet optimized
-- Mobile limited to critical tasks
-- Desktop first
+## Worked example
 
-For tables on small screens, consider:
+> **Brief:** "Redesign our order operations admin system."
+>
+> **Mode:** ADMIN. Efficiency and error prevention over visual novelty.
+> **Key surfaces:** order data grid · saved filters · bulk state update · detail drawer · exception queue · refund workflow · permission-aware actions.
+> **Strategy:** compact, highly legible table with rigid status-color semantics. Destructive actions separated spatially from routine ones. Saved views for the workflows operators run daily. Detail drawer as the small-screen strategy rather than horizontal scroll.
+>
+> Rejected: orders rendered as cards, dashboard gradients, a large title area eating working space, multiple dialogs for a common repetitive action.
 
-- Horizontal scrolling
-- Priority columns
-- Responsive detail rows
-- Detail drawer
-- Alternate task-specific mobile layout
-
-Do not squeeze every desktop column into a phone viewport.
-
-## Avoid
-
-- Awwwards-style experimental navigation in critical workflows
-- Heavy gradients
-- WebGL dashboards
-- Excessive whitespace
-- All-card layouts
-- Giant headings inside workspaces
-- Hidden important actions
-- High-motion UI
-- Weak destructive-action safeguards
-- Missing loading / empty / error states
+`examples/before-after-admin.md` shows this brief as code, in Chinese.

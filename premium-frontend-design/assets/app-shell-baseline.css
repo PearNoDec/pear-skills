@@ -1,0 +1,294 @@
+/* =============================================================================
+   Application-shell and platform baseline
+   -----------------------------------------------------------------------------
+   The engineering floor for product surfaces, as working CSS. Depends on the
+   roles in assets/tokens.schema.css. Reasoning: standards/app-shell.md.
+
+   Like a11y-baseline.css, this is meant to be copied close to verbatim: nothing
+   here is a style opinion. Each rule fixes a bug that is cheap now and expensive
+   the week before launch. Marketing pages (page-scroll model) need only §1, §5
+   and §6; product shells need all of it.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   1. Viewport and platform
+   ------------------------------------------------------------------------ */
+
+/* Pair with:
+   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+   Without viewport-fit=cover, env(safe-area-inset-*) is always 0. */
+
+:root {
+  --header-height: 3.5rem;
+  --sidebar-width: 15rem;
+  --sidebar-width-collapsed: 3.5rem;
+
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left:   env(safe-area-inset-left, 0px);
+  --safe-right:  env(safe-area-inset-right, 0px);
+}
+
+html {
+  /* Content never jumps sideways when a scrollbar appears or disappears. */
+  scrollbar-gutter: stable;
+  /* iOS: stop text auto-enlarging in landscape. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  /* Removes the 300ms tap delay in engines that still have one and prevents
+     double-tap zoom on controls, without disabling pinch-zoom on content. */
+  touch-action: manipulation;
+}
+
+/* iOS Safari zooms into any focused input whose computed font-size is under
+   16px. 1rem at the touch breakpoint keeps the layout still on focus.
+   Applies to touch devices only so dense desktop forms keep their scale. */
+@media (pointer: coarse) {
+  :where(input, select, textarea) {
+    font-size: max(1rem, 1em);
+  }
+}
+
+/* Anchors and :target land below a sticky header, not behind it. */
+:where(:target, [id]) {
+  scroll-margin-block-start: calc(var(--header-height) + var(--space-4, 1rem));
+}
+
+/* ---------------------------------------------------------------------------
+   2. Shell scroll model
+   The document does not scroll; exactly one content region does.
+   Use these classes only in the shell model (standards/app-shell.md § scroll).
+   ------------------------------------------------------------------------ */
+
+.shell-root {
+  height: 100vh;
+  height: 100dvh;                    /* tracks the visible viewport on mobile */
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.shell-body {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  min-height: 0;                     /* let children shrink to enable scroll */
+}
+
+.shell-sidebar {
+  inline-size: var(--sidebar-width);
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;   /* header / nav scroller / footer */
+  border-inline-end: 1px solid var(--border);
+  transition: inline-size var(--duration-slow) var(--ease-in-out);
+}
+
+.shell-sidebar[data-collapsed="true"] {
+  inline-size: var(--sidebar-width-collapsed);
+}
+
+.shell-sidebar > nav {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* The one scroller. min-width:0 stops a wide table from widening the shell. */
+.shell-main {
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding-block-end: var(--safe-bottom);
+}
+
+/* Sticky page header inside the content scroller. Works because .shell-main
+   is the scrolling ancestor and nothing between them clips. */
+.shell-page-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-sticky);
+  background: var(--background);
+}
+
+/* Header gets a boundary only once content has scrolled behind it.
+   Toggle data-scrolled from a sentinel IntersectionObserver, or replace with
+   animation-timeline: scroll() where supported. */
+.shell-header {
+  height: var(--header-height);
+  padding-block-start: var(--safe-top);
+  z-index: var(--z-header);
+  border-block-end: 1px solid transparent;
+}
+
+.shell-header[data-scrolled="true"] {
+  border-block-end-color: var(--border);
+}
+
+/* ---------------------------------------------------------------------------
+   3. Wide content inside the shell
+   Tables scroll horizontally inside their own wrapper. The wrapper is
+   keyboard-reachable (standards/data-grid.md).
+   ------------------------------------------------------------------------ */
+
+.scroll-x {
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: clip;                  /* clip, not hidden: keeps sticky alive */
+  overscroll-behavior-x: contain;
+}
+
+/* A sticky header row inside a vertically scrolling table wrapper. */
+.scroll-table {
+  overflow: auto;
+  max-block-size: var(--table-max-height, 70dvh);
+}
+
+.scroll-table thead th {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-raised);
+  background: var(--surface);
+}
+
+/* ---------------------------------------------------------------------------
+   4. Overlay layers
+   ------------------------------------------------------------------------ */
+
+/* Body scroll lock for the PAGE model, without the 15px layout shift.
+   Add/remove [data-scroll-locked] on <html> when a modal opens/closes.
+   The shell model never needs this: the body did not scroll to begin with. */
+html[data-scroll-locked] {
+  overflow: hidden;
+}
+
+/* Native <dialog>: reset UA styling, size safely, use the token layer. */
+dialog {
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-elevated);
+  color: var(--foreground);
+  box-shadow: var(--shadow-xl);
+  max-inline-size: min(100% - 2 * var(--gutter, 1rem), var(--dialog-max-width, 40rem));
+  max-block-size: min(100dvh - 2 * var(--space-6, 2rem), 90dvh);
+  overflow: hidden;                  /* body region scrolls, not the dialog */
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.5);
+}
+
+/* Bottom sheet on small screens: full width, above the safe area. */
+@media (max-width: 767px) {
+  dialog[data-sheet] {
+    margin-block-end: 0;
+    max-inline-size: 100%;
+    inline-size: 100%;
+    border-start-start-radius: var(--radius-xl);
+    border-start-end-radius: var(--radius-xl);
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+    padding-block-end: var(--safe-bottom);
+  }
+}
+
+/* Toast region: one per app, above everything, outside the safe area. */
+.toast-region {
+  position: fixed;
+  inset-block-end: calc(var(--space-4, 1rem) + var(--safe-bottom));
+  inset-inline-start: var(--space-4, 1rem);
+  z-index: var(--z-toast);
+  display: grid;
+  gap: var(--space-2, 0.5rem);
+  max-inline-size: min(100% - 2 * var(--space-4, 1rem), 24rem);
+  pointer-events: none;              /* the region never blocks clicks… */
+}
+
+.toast-region > * {
+  pointer-events: auto;              /* …individual toasts do */
+}
+
+/* Mobile bottom navigation sits above the home indicator. */
+.bottom-nav {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: var(--z-sticky);
+  padding-block-end: var(--safe-bottom);
+  background: var(--surface);
+  border-block-start: 1px solid var(--border);
+}
+
+/* ---------------------------------------------------------------------------
+   5. Rendering details that read as "unfinished" when missing
+   ------------------------------------------------------------------------ */
+
+/* Text selection in the brand, not the browser default blue. */
+::selection {
+  background: var(--primary-subtle);
+  color: var(--foreground);
+}
+
+/* Focus rings are clipped by overflow:hidden ancestors. Where a ring must
+   show inside a clipped container (a card grid, a scroll region), inset it. */
+.ring-inset:focus-visible {
+  outline-offset: calc(-1 * var(--ring-width));
+}
+
+/* Icons inherit color and align to the text's cap height, not the line box. */
+:where(svg[aria-hidden="true"]) {
+  flex-shrink: 0;
+  vertical-align: -0.125em;
+}
+
+/* Images never overflow their column and never distort. */
+:where(img, video, canvas, svg) {
+  max-inline-size: 100%;
+  block-size: auto;
+}
+
+:where(img) {
+  font-style: italic;                /* broken-image alt text reads as text */
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* Prevent long unbroken strings (URLs, ids) from breaking the shell. */
+:where(td, th, li, p, dd) {
+  overflow-wrap: anywhere;
+}
+
+/* ---------------------------------------------------------------------------
+   6. Print
+   Reports, invoices and order details get printed. Thirty seconds now.
+   ------------------------------------------------------------------------ */
+
+@media print {
+  .shell-header,
+  .shell-sidebar,
+  .toast-region,
+  .bottom-nav,
+  [data-print="hide"] {
+    display: none !important;
+  }
+
+  .shell-root,
+  .shell-main {
+    height: auto;
+    overflow: visible;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+  }
+
+  * {
+    box-shadow: none !important;
+  }
+}

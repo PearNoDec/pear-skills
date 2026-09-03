@@ -1,0 +1,280 @@
+/* =============================================================================
+   Token SCHEMA — roles and structure. Values are yours.
+
+   NOT DROP-IN. Every `TODO` is an empty declaration; ship this unfilled and
+   the interface renders unstyled. That is deliberate — it fails loudly rather
+   than quietly handing every project the same palette.
+
+   Rules for using this file are in SKILL.md §7.1; the reasoning is in
+   standards/design-system.md. In short: copy the structure verbatim, derive
+   every `TODO` from this project's brand, and say what you chose and why.
+   assets/token-presets.css has three incompatible starting points.
+
+   Two layers, and the split is the point:
+     PRIMITIVES  raw values. Never referenced by a component.
+     SEMANTIC    roles. The only layer components may touch.
+
+   If a component needs a value with no semantic name, the system is missing a
+   role. Add the role; do not reach past the semantic layer for a primitive.
+   ========================================================================== */
+
+/* --- 1. PRIMITIVES ------------------------------------------------------- */
+
+:root {
+  /* Neutral ramp, 12 steps, light → dark.
+     TODO: shift the hue toward the brand. A pure gray ramp reads undesigned. */
+  --neutral-0:  /* TODO */; --neutral-50:  /* TODO */; --neutral-100: /* TODO */;
+  --neutral-200:/* TODO */; --neutral-300: /* TODO */; --neutral-400: /* TODO */;
+  --neutral-500:/* TODO */; --neutral-600: /* TODO */; --neutral-700: /* TODO */;
+  --neutral-800:/* TODO */; --neutral-900: /* TODO */; --neutral-950: /* TODO */;
+
+  /* Brand ramp. 300 exists because dark mode steps UP the ramp, not down. */
+  --brand-100: /* TODO */; --brand-300: /* TODO */; --brand-500: /* TODO */;
+  --brand-600: /* TODO */; --brand-700: /* TODO */;
+
+  /* Status ramps, kept separable from brand — a status hue that collides with
+     the brand hue stops reading as status. */
+  --green-100: /* TODO */; --green-500: /* TODO */; --green-600: /* TODO */;
+  --amber-100: /* TODO */; --amber-500: /* TODO */; --amber-600: /* TODO */;
+  --red-100:   /* TODO */; --red-500:   /* TODO */; --red-600:   /* TODO */;
+  --blue-100:  /* TODO */; --blue-500:  /* TODO */; --blue-600:  /* TODO */;
+}
+
+/* --- 2. SEMANTIC — LIGHT ------------------------------------------------- */
+
+:root {
+  --background:           var(--neutral-0);
+  --surface:              var(--neutral-0);
+  --surface-secondary:    var(--neutral-50);
+  --surface-elevated:     var(--neutral-0);
+  --surface-inverted:     var(--neutral-900);
+  --surface-hover:        var(--neutral-50);
+  --surface-active:       var(--neutral-100);
+  --surface-selected:     var(--brand-100);
+
+  /* VERIFY, do not assume: --muted-foreground must clear 4.5:1 on both
+     --background and --surface-secondary, in both themes. This is the most
+     common accessibility failure in "premium" work and it fails silently. */
+  --foreground:           var(--neutral-900);
+  --foreground-secondary: var(--neutral-700);
+  --muted-foreground:     var(--neutral-600);
+  --foreground-inverted:  var(--neutral-0);
+  --foreground-on-brand:  var(--neutral-0);
+
+  --border:               var(--neutral-200);   /* structural */
+  --border-strong:        var(--neutral-300);   /* emphasis */
+  --border-subtle:        var(--neutral-100);
+
+  --primary:              var(--brand-500);
+  --primary-hover:        var(--brand-600);
+  --primary-active:       var(--brand-700);
+  --primary-foreground:   var(--neutral-0);
+  --primary-subtle:       var(--brand-100);
+
+  --success:              var(--green-500);
+  --success-subtle:       var(--green-100);
+  --success-foreground:   var(--green-600);
+
+  --warning:              var(--amber-500);
+  --warning-subtle:       var(--amber-100);
+  --warning-foreground:   var(--amber-600);
+
+  --destructive:          var(--red-500);
+  --destructive-hover:    var(--red-600);
+  --destructive-subtle:   var(--red-100);
+  --destructive-foreground: var(--neutral-0);
+
+  --info:                 var(--blue-500);
+  --info-subtle:          var(--blue-100);
+  --info-foreground:      var(--blue-600);
+
+  /* Chart series. Six is the ceiling for distinguishable series. Tune per
+     theme; never reuse a status hue. See standards/data-visualization.md. */
+  --chart-1: /* TODO: usually the brand */; --chart-2: /* TODO */;
+  --chart-3: /* TODO */;                    --chart-4: /* TODO */;
+  --chart-5: /* TODO */;                    --chart-6: /* TODO */;
+
+  /* One ring token, used everywhere, never removed. */
+  --ring:                 var(--brand-500);
+  --ring-offset:          var(--background);
+  --ring-width:           2px;
+  --ring-offset-width:    2px;
+
+  /* Light-mode depth comes from shadow.
+     TODO: tint with the neutral ramp's hue — pure black over a warm neutral
+     reads muddy. Four steps, sm → xl. */
+  --shadow-sm: /* TODO */; --shadow-md: /* TODO */;
+  --shadow-lg: /* TODO */; --shadow-xl: /* TODO */;
+}
+
+/* --- 3. SEMANTIC — DARK -------------------------------------------------- */
+/* Redeclare only what changes. The relationships below must survive whatever
+   values you pick; see standards/theming-dark-mode.md. */
+
+:root[data-theme="dark"],
+:root.dark {
+  /* Elevation inverts: a raised surface is LIGHTER, not more shadowed. */
+  --background:           var(--neutral-950);
+  --surface:              var(--neutral-900);
+  --surface-secondary:    var(--neutral-900);  /* must differ from --background */
+  --surface-elevated:     var(--neutral-800);
+  --surface-inverted:     var(--neutral-0);
+  --surface-hover:        var(--neutral-800);
+  --surface-active:       var(--neutral-700);
+  --surface-selected:     color-mix(in oklab, var(--brand-500) 22%, var(--neutral-900));
+
+  --foreground:           var(--neutral-100);
+  --foreground-secondary: var(--neutral-300);
+  --muted-foreground:     var(--neutral-400);
+  --foreground-inverted:  var(--neutral-900);
+
+  --border:               var(--neutral-800);
+  --border-strong:        var(--neutral-700);
+  --border-subtle:        var(--neutral-900);
+
+  /* Saturated brand steps UP the ramp — a brand color tuned for white
+     vibrates and reads neon on near-black. */
+  --primary:              var(--brand-300);
+  --primary-hover:        var(--brand-100);
+  --primary-active:       var(--brand-100);
+  --primary-foreground:   var(--neutral-950);
+  --primary-subtle:       color-mix(in oklab, var(--brand-500) 20%, var(--neutral-900));
+
+  /* Subtle status backgrounds mix INTO the dark surface. Reusing the
+     light-mode tint produces a bright patch. */
+  --success-subtle:     color-mix(in oklab, var(--green-500) 20%, var(--neutral-900));
+  --warning-subtle:     color-mix(in oklab, var(--amber-500) 20%, var(--neutral-900));
+  --destructive-subtle: color-mix(in oklab, var(--red-500)   20%, var(--neutral-900));
+  --info-subtle:        color-mix(in oklab, var(--blue-500)  20%, var(--neutral-900));
+
+  --ring:                 var(--brand-300);
+  --ring-offset:          var(--background);
+
+  /* Chart series get lighter on dark, like the brand. TODO: re-tune all six. */
+
+  /* Shadows barely read on dark; depth came from surface contrast above.
+     TODO: pure-black alpha, higher opacity than the light set. */
+  --shadow-sm: /* TODO */; --shadow-md: /* TODO */;
+  --shadow-lg: /* TODO */; --shadow-xl: /* TODO */;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { color-scheme: dark; }
+}
+
+/* --- 4. SCALES ----------------------------------------------------------- */
+/* The scale SHAPE is prescribed; the numbers are not. Radius, type ratio,
+   motion duration and neutral temperature are the four decisions that carry
+   most of the identity — see standards/design-system.md before setting them. */
+
+:root {
+  /* Spacing: one scale, 12 steps, roughly geometric. A value off the scale
+     needs a justification. */
+  --space-0: 0;
+  --space-1: /* TODO */; --space-2:  /* TODO */; --space-3:  /* TODO */;
+  --space-4: /* TODO */; --space-5:  /* TODO */; --space-6:  /* TODO */;
+  --space-7: /* TODO */; --space-8:  /* TODO */; --space-9:  /* TODO */;
+  --space-10:/* TODO */; --space-11: /* TODO */;
+
+  --section-y: /* TODO: clamp() — marketing breathes, ADMIN overrides down */;
+  --gutter:    /* TODO: clamp() */;
+
+  --container-max:  /* TODO */;      /* main content column */
+  --container-wide: /* TODO */;      /* full-bleed media, workspace shells */
+  --container-text: /* TODO: ch */;  /* readable measure for long-form */
+  --grid-columns:   12;
+  --grid-gap:       /* TODO */;
+
+  /* Radius: 4 steps. Must SCALE — small controls never take the xl value. */
+  --radius-sm: /* TODO */; --radius-md: /* TODO */;
+  --radius-lg: /* TODO */; --radius-xl: /* TODO */;
+  --radius-full: 9999px;   /* avatars and true pills only, never buttons */
+
+  /* Type. Latin face FIRST in the stack so digits and Latin resolve to it;
+     CJK face behind it. See standards/cjk-typography.md. */
+  --font-sans:    /* TODO */;
+  --font-mono:    /* TODO */;
+  --font-display: /* TODO: a distinct display face is the cheapest exit from
+                     template territory */;
+
+  --weight-regular: 400;  --weight-medium: 500;
+  --weight-semibold: 600; --weight-bold:   700;
+
+  --text-display: /* TODO */; --text-h1:      /* TODO */;
+  --text-h2:      /* TODO */; --text-h3:      /* TODO */;
+  --text-h4:      /* TODO */; --text-title:   /* TODO */;
+  --text-body:    /* TODO */; --text-body-sm: /* TODO */;
+  --text-label:   /* TODO */; --text-caption: /* TODO */;
+
+  /* CJK needs looser leading than Latin — 1.75+ for body, not 1.5. */
+  --leading-tight:   /* TODO: display / h1 */;
+  --leading-snug:    /* TODO: h2–h4 */;
+  --leading-normal:  /* TODO: body */;
+  --leading-relaxed: /* TODO: long-form */;
+
+  /* Negative tracking is Latin-only — it collides CJK glyphs. */
+  --tracking-tight:  /* TODO */;
+  --tracking-normal: 0;
+  --tracking-wide:   /* TODO: small caps / labels only */;
+
+  --duration-instant: /* TODO: hover / active */;
+  --duration-fast:    /* TODO: tooltips */;
+  --duration-normal:  /* TODO: dropdowns, tabs */;
+  --duration-slow:    /* TODO: dialogs, drawers */;
+  --duration-slower:  /* TODO: marketing reveals only */;
+
+  --ease-out:    /* TODO: entering */;
+  --ease-in:     /* TODO: exiting */;
+  --ease-in-out: /* TODO: moving */;
+  --ease-spring: /* TODO: sparingly */;
+}
+
+/* Tabular figures stop numbers jittering as values update. */
+.numeric,
+[data-numeric] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* --- 5. DENSITY — copy as-is --------------------------------------------- */
+/* Controls size from --control-h-*, so one attribute resizes every control in
+   the product at once instead of one component at a time. */
+
+:root {
+  --density: 1;
+  --control-h-sm: calc(/* TODO */ * var(--density));
+  --control-h-md: calc(/* TODO */ * var(--density));
+  --control-h-lg: calc(/* TODO */ * var(--density));
+  --row-h:        calc(/* TODO */ * var(--density));
+}
+
+[data-density="compact"]     { --density: 0.86; }
+[data-density="comfortable"] { --density: 1.14; }
+
+/* Dense surfaces cut motion and rhythm without losing feedback. */
+[data-surface="admin"] {
+  --duration-normal: /* TODO: ~60% of default */;
+  --duration-slow:   /* TODO */;
+  --duration-slower: /* TODO: same as slow — no marketing reveals here */;
+  --section-y:       var(--space-6);
+}
+
+/* --- 6. Z-INDEX — copy as-is --------------------------------------------- */
+/* Never write a raw z-index. Ad-hoc values are the root cause of most
+   "the dropdown renders behind the sticky header" bugs. */
+
+:root {
+  --z-base: 0;      --z-raised: 10;   --z-sticky: 100;
+  --z-header: 200;  --z-drawer: 300;  --z-overlay: 400;
+  --z-dialog: 500;  --z-popover: 600; --z-tooltip: 700;  --z-toast: 800;
+}
+
+/* --- 7. BREAKPOINTS ------------------------------------------------------ */
+/* Custom properties cannot be used in media queries. Single source of truth:
+     sm 640 · md 768 · lg 1024 · xl 1280 · 2xl 1536
+
+   TAILWIND v4: do not mirror into tailwind.config.js — that file is gone.
+   Re-declare the scale inside `@theme {}` in CSS, which generates the
+   utilities and the custom properties together. Feeding these variables into
+   `@theme` as var() indirections defeats v4's static extraction.
+   TAILWIND v3: mirror into theme.extend as usual.                          */
