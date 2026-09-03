@@ -1,0 +1,284 @@
+/* =============================================================================
+   Token presets — three incompatible starting points
+   -----------------------------------------------------------------------------
+   `assets/tokens.schema.css` defines the roles. This file fills them three
+   different ways, on purpose.
+
+   These are NOT three shades of one house style. Radius, type ratio, motion
+   duration and neutral temperature move in opposite directions between them,
+   because those four decisions carry most of an interface's identity. Picking
+   one is a design decision you have to make and defend.
+
+   HOW TO USE
+     1. Read all three. Pick the one whose character fits the product, or
+        reject all three and derive your own from the brand.
+     2. Copy its block into the schema. Then CHANGE something — the brand ramp
+        at minimum, ideally the type scale too. A preset shipped unchanged is
+        the same failure as a default shipped unchanged; it just moves the
+        template one level up.
+     3. Say in your reply which preset you started from and what you changed.
+
+   The brand ramps here are deliberately off the beaten path (oxblood, teal,
+   moss) because the 220–260° blue-violet band is where the first generation of
+   generated interfaces lives — and cream + serif + terracotta is where the
+   second generation lives (standards/anti-patterns.md §2). None of these three
+   is that cluster, and none of them is your brand either. Replace them.
+
+   A preset is the answer to "what does a coherent position on radius, ratio,
+   motion and temperature look like". It is never the answer to "what should
+   this product look like".
+   ========================================================================== */
+
+
+/* =============================================================================
+   PRESET A — EDITORIAL
+   Ink on stone. Cool-grey paper (NOT cream — cream + serif + terracotta is
+   the current generated-page cluster), serif display, small radius, high type
+   contrast, slow deliberate motion, generous rhythm.
+
+   Fits:      corporate sites, brand and agency work, annual reports, long-form
+   Fights:    dense tables, high-frequency operational tools
+   Watch for: hairline rules everywhere and zero radius on everything are the
+              "broadsheet" tell. Borrow the pacing, not the costume.
+   ========================================================================== */
+
+[data-preset="editorial"] {
+  /* Stone neutral ramp — a faint cool-green cast, like uncoated paper stock.
+     Deliberately not cream and not pure gray. */
+  --neutral-0:  #fbfbf9; --neutral-50:  #f3f4f1; --neutral-100: #e9ebe6;
+  --neutral-200:#d8dbd4; --neutral-300: #b9bdb4; --neutral-400: #8d9289;
+  --neutral-500:#656a62; --neutral-600: #4c514a; --neutral-700: #383c36;
+  --neutral-800:#262925; --neutral-900: #171916; --neutral-950: #0e100d;
+
+  /* Oxblood — printed and considered, and not the terracotta every
+     generated "premium" page reaches for. */
+  --brand-100: #f3dcdf; --brand-300: #c98a95; --brand-500: #7c2230;
+  --brand-600: #651a26; --brand-700: #4e131d;
+
+  --green-100: #dfeadb; --green-500: #3f7042; --green-600: #305835;
+  --amber-100: #f7e6c8; --amber-500: #966d15; --amber-600: #7a5810;
+  --red-100:   #f7dcd8; --red-500:   #b23a2e; --red-600:   #922c22;
+  --blue-100:  #d9e3ee; --blue-500:  #37618c; --blue-600:  #2a4d70;
+
+  /* Shadows tinted with the neutral's hue, never pure black. */
+  --shadow-sm: 0 1px 2px 0 rgb(23 25 22 / 0.06);
+  --shadow-md: 0 2px 6px -1px rgb(23 25 22 / 0.08), 0 6px 16px -4px rgb(23 25 22 / 0.06);
+  --shadow-lg: 0 10px 32px -6px rgb(23 25 22 / 0.12);
+  --shadow-xl: 0 28px 60px -16px rgb(23 25 22 / 0.20);
+
+  /* Small radius. Small, not zero: zero-on-everything is now a tell of its own. */
+  --radius-sm: 1px;  --radius-md: 2px;  --radius-lg: 4px;  --radius-xl: 6px;
+
+  --font-sans:    "Söhne", "Inter", ui-sans-serif, system-ui, sans-serif;
+  /* A serif with real character. Choose one you can license and self-host;
+     the generic fallbacks here are a stack, not a recommendation. */
+  --font-display: "GT Sectra", "Tiempos Headline", "Canela", Georgia, serif;
+  --font-mono:    ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* High type contrast — a ~1.5 ratio. Display dwarfs body; that IS the style. */
+  --text-display: clamp(3.25rem, 1.2rem + 7.5vw, 8rem);
+  --text-h1:      clamp(2.25rem, 1.4rem + 3.4vw, 4rem);
+  --text-h2:      clamp(1.625rem, 1.2rem + 1.8vw, 2.5rem);
+  --text-h3:      clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --text-h4:      1.125rem;   --text-title:   1rem;
+  --text-body:    1.0625rem;  --text-body-sm: 0.9375rem;
+  --text-label:   0.8125rem;  --text-caption: 0.75rem;
+
+  --leading-tight: 1.05;  --leading-snug: 1.2;
+  --leading-normal: 1.6;  --leading-relaxed: 1.75;
+  --tracking-tight: -0.028em;  --tracking-wide: 0.08em;
+
+  /* Slow and deliberate. Motion here is part of the composition, not feedback. */
+  --duration-instant: 120ms; --duration-fast:   240ms;
+  --duration-normal:  380ms; --duration-slow:   520ms;
+  --duration-slower:  900ms;
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in:     cubic-bezier(0.64, 0, 0.78, 0);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  /* Generous rhythm, narrow measure. */
+  --space-1: 0.25rem; --space-2: 0.5rem;  --space-3: 0.75rem; --space-4: 1rem;
+  --space-5: 1.5rem;  --space-6: 2.25rem; --space-7: 3.5rem;  --space-8: 5rem;
+  --space-9: 7rem;    --space-10: 9rem;   --space-11: 12rem;
+  --section-y: clamp(4rem, 10vw, 12rem);
+  --gutter:    clamp(1.25rem, 6vw, 5rem);
+  --container-max: 1180px; --container-wide: 1600px; --container-text: 62ch;
+  --grid-gap: clamp(1.5rem, 3vw, 3rem);
+
+  --control-h-sm: calc(2rem * var(--density));
+  --control-h-md: calc(2.5rem * var(--density));
+  --control-h-lg: calc(3.25rem * var(--density));
+  --row-h:        calc(3rem * var(--density));
+}
+
+
+/* =============================================================================
+   PRESET B — TECHNICAL
+   Instrument panel. Cool neutrals, grotesque + mono, tight radius, compressed
+   type ratio, fast motion, dense rhythm.
+
+   Fits:      devtools, admin and operations consoles, data products, infra
+   Fights:    brand-led marketing, anything that needs to feel warm
+   ========================================================================== */
+
+[data-preset="technical"] {
+  /* Cool neutral ramp — slight blue cast, reads as screen rather than paper. */
+  --neutral-0:  #ffffff; --neutral-50:  #f5f7f9; --neutral-100: #e9edf2;
+  --neutral-200:#d6dce5; --neutral-300: #b3bcc9; --neutral-400: #8592a3;
+  --neutral-500:#5d6b7d; --neutral-600: #45525f; --neutral-700: #333d48;
+  --neutral-800:#212932; --neutral-900: #141a21; --neutral-950: #0a0e13;
+
+  /* Teal — signal-colored without joining the blue-violet crowd.
+     500 clears 4.5:1 with white text, so a solid primary button passes AA. */
+  --brand-100: #cdf0ec; --brand-300: #6ecfc4; --brand-500: #117a6e;
+  --brand-600: #0d6357; --brand-700: #094c43;
+
+  /* Status stays maximally separable — these get read at a glance, at volume. */
+  --green-100: #d3f0dc; --green-500: #1a8a4f; --green-600: #11713f;
+  --amber-100: #fdeac6; --amber-500: #b07d09; --amber-600: #8f6407;
+  --red-100:   #fddcdc; --red-500:   #d03a3a; --red-600:   #ac2929;
+  --blue-100:  #d9e8fb; --blue-500:  #2b7ad4; --blue-600:  #1f61ad;
+
+  --shadow-sm: 0 1px 2px 0 rgb(10 14 19 / 0.06);
+  --shadow-md: 0 2px 4px -1px rgb(10 14 19 / 0.08), 0 4px 10px -3px rgb(10 14 19 / 0.06);
+  --shadow-lg: 0 8px 20px -4px rgb(10 14 19 / 0.12);
+  --shadow-xl: 0 20px 40px -12px rgb(10 14 19 / 0.18);
+
+  --radius-sm: 2px;  --radius-md: 3px;  --radius-lg: 4px;  --radius-xl: 6px;
+
+  --font-sans:    "Inter", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  /* Compressed ratio (~1.2). Hierarchy comes from weight and color, not scale —
+     which is what lets a dense screen stay legible. */
+  --text-display: clamp(2rem, 1.4rem + 2.6vw, 3rem);
+  --text-h1:      clamp(1.5rem, 1.25rem + 1.1vw, 2rem);
+  --text-h2:      clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --text-h3:      1.125rem;   --text-h4:      1rem;
+  --text-title:   0.9375rem;  --text-body:    0.9375rem;
+  --text-body-sm: 0.875rem;   --text-label:   0.8125rem;
+  --text-caption: 0.75rem;
+
+  --leading-tight: 1.15; --leading-snug: 1.3;
+  --leading-normal: 1.5; --leading-relaxed: 1.65;
+  --tracking-tight: -0.011em;  --tracking-wide: 0.04em;
+
+  /* Fast. Nothing here should make an operator wait for an animation. */
+  --duration-instant: 60ms;  --duration-fast:   100ms;
+  --duration-normal:  140ms; --duration-slow:   180ms;
+  --duration-slower:  180ms;
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.3, 0.64, 1);
+
+  /* Dense rhythm, wide container — this preset expects a workspace shell. */
+  --space-1: 0.25rem; --space-2: 0.375rem; --space-3: 0.5rem;  --space-4: 0.75rem;
+  --space-5: 1rem;    --space-6: 1.5rem;   --space-7: 2rem;    --space-8: 3rem;
+  --space-9: 4rem;    --space-10: 5rem;    --space-11: 6rem;
+  --section-y: clamp(1.5rem, 3vw, 3rem);
+  --gutter:    clamp(0.75rem, 2vw, 1.5rem);
+  --container-max: 1440px; --container-wide: 100%; --container-text: 72ch;
+  --grid-gap: clamp(0.75rem, 1.5vw, 1.25rem);
+
+  --control-h-sm: calc(1.625rem * var(--density));
+  --control-h-md: calc(2rem * var(--density));
+  --control-h-lg: calc(2.375rem * var(--density));
+  --row-h:        calc(2.25rem * var(--density));
+}
+
+
+/* =============================================================================
+   PRESET C — SOFT
+   Approachable product. Warm-neutral, humanist sans, large radius, moderate
+   type ratio, spring motion, roomy but not editorial.
+
+   Fits:      SaaS product surfaces, onboarding, consumer-adjacent B2B
+   Fights:    authority-led enterprise brand work, very dense data screens
+
+   Note the brand/status collision this preset has to solve: the brand ramp is
+   green, so `--success` moves to a blue-leaning teal. Status color that
+   collides with brand color destroys the status signal.
+   ========================================================================== */
+
+[data-preset="soft"] {
+  --neutral-0:  #ffffff; --neutral-50:  #faf9f7; --neutral-100: #f2f0ec;
+  --neutral-200:#e6e2db; --neutral-300: #cec8bd; --neutral-400: #a49c8e;
+  --neutral-500:#7a7266; --neutral-600: #5c554b; --neutral-700: #443e36;
+  --neutral-800:#2e2a24; --neutral-900: #1c1915; --neutral-950: #12100d;
+
+  /* Moss — organic, low-tech-signal. 500 clears 4.5:1 with white text. */
+  --brand-100: #dcecd5; --brand-300: #9ac488; --brand-500: #3f7a31;
+  --brand-600: #326227; --brand-700: #264b1e;
+
+  /* Success pushed to teal so it cannot be confused with the brand green. */
+  --green-100: #cfeeea; --green-500: #10817a; --green-600: #0a6862;
+  --amber-100: #fbe8ca; --amber-500: #a8760f; --amber-600: #895f0b;
+  --red-100:   #fadfda; --red-500:   #c0472f; --red-600:   #9d3624;
+  --blue-100:  #dce7f5; --blue-500:  #3670bc; --blue-600:  #2a5a99;
+
+  --shadow-sm: 0 1px 3px 0 rgb(28 25 21 / 0.07);
+  --shadow-md: 0 4px 10px -2px rgb(28 25 21 / 0.09), 0 2px 4px -2px rgb(28 25 21 / 0.06);
+  --shadow-lg: 0 12px 28px -6px rgb(28 25 21 / 0.13);
+  --shadow-xl: 0 28px 56px -16px rgb(28 25 21 / 0.20);
+
+  /* Large radius — the opposite pole from Editorial. Note it still SCALES:
+     small controls never get the xl value. */
+  --radius-sm: 6px;  --radius-md: 10px;  --radius-lg: 16px;  --radius-xl: 24px;
+
+  --font-sans:    "General Sans", "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "General Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    ui-monospace, "SF Mono", Menlo, monospace;
+
+  --text-display: clamp(2.5rem, 1.5rem + 4.4vw, 4.5rem);
+  --text-h1:      clamp(1.875rem, 1.35rem + 2.2vw, 3rem);
+  --text-h2:      clamp(1.5rem, 1.2rem + 1.2vw, 2.125rem);
+  --text-h3:      clamp(1.1875rem, 1.1rem + 0.5vw, 1.4375rem);
+  --text-h4:      1.0625rem;  --text-title:   1rem;
+  --text-body:    1rem;       --text-body-sm: 0.9375rem;
+  --text-label:   0.8125rem;  --text-caption: 0.75rem;
+
+  --leading-tight: 1.14; --leading-snug: 1.3;
+  --leading-normal: 1.62; --leading-relaxed: 1.75;
+  --tracking-tight: -0.018em;  --tracking-wide: 0.05em;
+
+  --duration-instant: 100ms; --duration-fast:   180ms;
+  --duration-normal:  260ms; --duration-slow:   340ms;
+  --duration-slower:  600ms;
+  --ease-out:    cubic-bezier(0.2, 0.9, 0.25, 1);
+  --ease-in:     cubic-bezier(0.6, 0, 0.9, 0.2);
+  --ease-in-out: cubic-bezier(0.6, 0, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --space-1: 0.25rem; --space-2: 0.5rem;  --space-3: 0.75rem; --space-4: 1rem;
+  --space-5: 1.5rem;  --space-6: 2rem;    --space-7: 3rem;    --space-8: 4rem;
+  --space-9: 5.5rem;  --space-10: 7rem;   --space-11: 9rem;
+  --section-y: clamp(3rem, 7vw, 7rem);
+  --gutter:    clamp(1rem, 4vw, 3rem);
+  --container-max: 1240px; --container-wide: 1560px; --container-text: 66ch;
+  --grid-gap: clamp(1rem, 2vw, 2rem);
+
+  --control-h-sm: calc(1.875rem * var(--density));
+  --control-h-md: calc(2.375rem * var(--density));
+  --control-h-lg: calc(2.875rem * var(--density));
+  --row-h:        calc(2.75rem * var(--density));
+}
+
+
+/* -----------------------------------------------------------------------------
+   Contrast note
+
+   Every `--neutral-600` above clears 7:1 on its own `--neutral-0`, and every
+   `--neutral-400` clears 6:1 on its own `--neutral-950`, so `--muted-foreground`
+   is safe in both themes as shipped. Every `--brand-500` clears 4.5:1 under
+   white text, so a solid primary button passes AA. Every `--*-600` status
+   foreground clears 4.5:1 on white. (Computed with the WCAG relative-luminance
+   formula; `scripts/verify-browser.mjs --axe` re-checks the rendered result.)
+
+   The `--*-500` status values are for icons, borders and badges — they are
+   NOT all text-safe on white. Text uses the `-600` foreground role. If you retint a ramp — and you should —
+   re-verify those two pairs. Muted text is where contrast fails most often, and
+   it fails silently.
+   -------------------------------------------------------------------------- */

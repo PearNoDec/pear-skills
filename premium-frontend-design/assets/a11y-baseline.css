@@ -1,0 +1,275 @@
+/* =============================================================================
+   Accessibility baseline
+   -----------------------------------------------------------------------------
+   The floor, as working CSS. Depends on the roles in assets/tokens.schema.css.
+
+   Unlike the token files, this one IS meant to be copied close to verbatim.
+   Nothing here is a style opinion — it is correctness. Everything is cheap to
+   include and expensive to retrofit, so add it at the start of a project, not
+   during the accessibility pass at the end.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   1. Focus
+   The single most common accessibility regression is `outline: none` added to
+   make a design look clean. The rule is not "never remove it" — it is "never
+   remove it without replacing it with something equally visible".
+   ------------------------------------------------------------------------ */
+
+/* Remove the ring for mouse users only; keyboard users always keep it. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Do NOT restate border-radius here. It would apply to the element, not to the
+   outline, so a card at --radius-xl would visibly reshape the moment it is
+   focused. Current browsers already make the outline follow the element's own
+   border-radius, so there is nothing to restate.
+
+   Nothing in this rule is transitioned, on purpose: the ring has to appear on
+   the frame focus lands, and a fade makes fast tabbing lose it entirely. If a
+   component declares `transition: all`, exclude `outline` there. */
+:focus-visible {
+  outline: var(--ring-width) solid var(--ring);
+  outline-offset: var(--ring-offset-width);
+}
+
+/* On dark or image backgrounds a single-color ring can disappear. A second
+   contrasting layer keeps it visible on any surface. */
+.focus-ring-contrast:focus-visible {
+  outline: var(--ring-width) solid var(--ring);
+  outline-offset: var(--ring-offset-width);
+  box-shadow: 0 0 0 calc(var(--ring-width) + var(--ring-offset-width))
+              var(--ring-offset);
+}
+
+/* ---------------------------------------------------------------------------
+   2. Reduced motion
+   Reduce; do not delete. A user who asks for less motion still needs to know
+   that their action registered — keep opacity and color feedback.
+   ------------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Kill the effects that actually cause discomfort. */
+  [data-parallax],
+  [data-scroll-linked],
+  [data-autoplay] {
+    transform: none !important;
+    animation: none !important;
+  }
+
+  /* Preserve non-motion feedback. */
+  :where(button, a, [role="button"], input, select, textarea) {
+    transition-property: color, background-color, border-color, opacity !important;
+    transition-duration: var(--duration-instant) !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   3. Skip link
+   First focusable element in the document. Required on any page with more than
+   a trivial amount of navigation.
+   ------------------------------------------------------------------------ */
+
+.skip-link {
+  position: absolute;
+  /* Logical, not left/top — the rest of the system requires it, and a skip link
+     is the first thing an RTL layout would get wrong. */
+  inset-inline-start: var(--space-4);
+  inset-block-start: var(--space-4);
+  z-index: var(--z-toast);
+  padding: var(--space-2) var(--space-4);
+  background: var(--surface-elevated);
+  color: var(--foreground);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* ---------------------------------------------------------------------------
+   4. Screen-reader-only content
+   For labels and status text that must exist in the accessibility tree but not
+   on screen. `.sr-only-focusable` reveals itself when focused.
+   ------------------------------------------------------------------------ */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sr-only-focusable:focus-visible {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip-path: none;
+  white-space: normal;
+}
+
+/* ---------------------------------------------------------------------------
+   5. Touch targets
+   WCAG 2.2 target size is 24×24 CSS px minimum; 44×44 is the practical floor
+   for anything a person taps on a phone.
+
+   This rule covers controls that own their box and can simply grow. It does
+   NOT cover checkboxes and radios: a min-size on those changes the *rendered*
+   control, not the hit area, so on any touch device — tablets and touchscreen
+   laptops included — every row checkbox in a data grid would jump to 44px and
+   break the --density / --row-h scale the product is built on. Their target
+   comes from the associated <label>, or from `.hit-area` below.
+
+   `min-inline-size` does not apply to non-replaced inline boxes, so an inline
+   link inside a paragraph is unaffected; this reaches links that are block,
+   inline-block or flex items, which is the intent.
+   ------------------------------------------------------------------------ */
+
+@media (pointer: coarse) {
+  :where(button, a, [role="button"], [role="tab"], [role="menuitem"], summary) {
+    min-block-size: 44px;
+    min-inline-size: 44px;
+  }
+
+  /* A checkbox's target is its label, not the box. Size the label instead. */
+  :where(label:has(> input[type="checkbox"], > input[type="radio"])) {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 44px;
+  }
+}
+
+/* Extends the hit area without changing the rendered box — for icon buttons and
+   for the checkboxes deliberately left out above.
+
+   Two requirements, both silent failures when missed:
+     · The element must be positioned. `.hit-area` sets that itself; do not
+       override it, or the pseudo-element resolves against the viewport.
+     · Put it on the control or on a wrapper that IS the target — a <button>,
+       or the <label> around a checkbox. Never on the <input> itself: replaced
+       elements do not render ::before / ::after, so nothing happens. */
+.hit-area {
+  position: relative;
+}
+
+.hit-area::after {
+  content: "";
+  position: absolute;
+  inset: 50%;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  translate: -50% -50%;
+}
+
+/* ---------------------------------------------------------------------------
+   6. Forced colors / Windows High Contrast
+   In forced-colors mode, backgrounds and shadows are stripped. Components that
+   convey state through background alone become invisible. Restore the signal
+   with a border.
+   ------------------------------------------------------------------------ */
+
+@media (forced-colors: active) {
+  :where(button, [role="button"], .card, .badge, [data-state]) {
+    border: 1px solid ButtonBorder;
+  }
+
+  :focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  /* No SVG rule here on purpose. Icons drawn with hard-coded `fill`/`stroke`
+     literals disappear against the forced palette, but the fix is in the
+     markup — draw with `currentColor`, which maps onto the system text color
+     automatically. A blanket `fill: currentColor` would fill in every stroke-
+     drawn icon set, Lucide included, so it cannot be applied here. */
+}
+
+/* ---------------------------------------------------------------------------
+   7. Text robustness
+   Long words, long translations and user-generated content break layouts that
+   were only ever tested with short English strings.
+   ------------------------------------------------------------------------ */
+
+:where(h1, h2, h3, h4, p, li, td, th, label, button, a) {
+  /* Safe in every script: only breaks strings that would otherwise overflow. */
+  overflow-wrap: break-word;
+}
+
+/* Hyphenation is for body copy only. Headings, buttons and labels must never
+   hyphenate — a display line or a button label broken with a hyphen reads as a
+   rendering fault, not as typesetting. The wider set above still gets
+   `overflow-wrap`, which is the actual overflow safety net.
+
+   Applies only to scripts that hyphenate, and only when the element or an
+   ancestor declares `lang`. Without `lang` this is a no-op — set it on <html>
+   or hyphenation silently never happens. */
+:where(p, li, dd, td) {
+  hyphens: auto;
+}
+
+/* CJK does not hyphenate. `line-break: strict` applies the kinsoku rules that
+   stop a line from beginning with a closing bracket or a full stop, which is
+   the difference between typeset and merely wrapped Chinese/Japanese text.
+   See standards/cjk-typography.md. */
+:where(:lang(zh), :lang(ja), :lang(ko)) {
+  hyphens: none;
+  line-break: strict;
+  /* `break-all` would break Latin words mid-word inside mixed CJK/Latin
+     content. `normal` already breaks between CJK characters. */
+  word-break: normal;
+}
+
+/* Headings should wrap at phrase boundaries, not leave a single orphan word.
+   Latin only: `balance` needs word boundaries to work with, so its benefit in
+   CJK is marginal, and browsers cap it at ~6 lines regardless. */
+:where(h1, h2, h3):not(:lang(zh), :lang(ja), :lang(ko)) {
+  text-wrap: balance;
+}
+
+:where(p) {
+  text-wrap: pretty;
+}
+
+/* Fake bold. When a CJK family has no 600 weight the browser synthesises one
+   by smearing the glyphs — at body size this reads as blur, not weight. Let it
+   fall back to the nearest real weight instead, and carry emphasis with color
+   or size. Scoped to CJK because Latin synthesis is usually acceptable. */
+:where(:lang(zh), :lang(ja), :lang(ko)) {
+  font-synthesis-weight: none;
+}
+
+/* ---------------------------------------------------------------------------
+   8. Motion-safe scroll behavior
+   ------------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Sticky headers otherwise cover the target of an in-page anchor link. */
+:target {
+  scroll-margin-block-start: calc(var(--header-height, 4rem) + var(--space-4));
+}

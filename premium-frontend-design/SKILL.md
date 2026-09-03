@@ -1,835 +1,234 @@
 ---
 name: premium-frontend-design
-description: Enterprise-grade frontend design and implementation skill for corporate websites, SaaS products, dashboards, admin systems, landing pages and digital products. Automatically chooses the appropriate visual, UX, information-density, motion, responsive, accessibility and engineering strategy for the product surface, then audits, implements and polishes the result to a premium production standard.
-version: 1.0.0
-author: pearno
+description: Production-grade frontend design and implementation for corporate websites, SaaS marketing sites and product UIs, dashboards, and admin/CRM/ERP/CMS internal tools (企业官网 / 落地页 / SaaS / 中后台 / 管理系统 / 数据看板 / 组件库). Use this skill whenever the user wants to design, redesign, build, restyle, polish, audit or review any web UI — a page, a component, a form, a table, a chart, a dashboard, a design system, or "make it look better / 美化 / 优化界面" — in React, Vue, Next.js, Nuxt, Tailwind, shadcn/ui, Ant Design, Element Plus or plain HTML/CSS, even if they do not say "design". Classifies the surface into CORPORATE / SAAS / ADMIN / GENERAL mode, matches effort to a tier from one-line fix to full design system, derives tokens from the brand instead of shipping defaults, applies component contracts for grids, forms, overlays, charts and the app shell, handles CJK typography and IME input, and verifies in a real browser with bundled scripts. Not for backend/API work or copy with no layout change.
+license: MIT
+metadata:
+  author: pearno
+  version: "2.0.0"
 ---
 
-# Premium Frontend Design Master Skill
+# Premium Frontend Design
 
-## Purpose
+Treat frontend work as the coordinated design and engineering of a complete digital product, not as decoration applied to markup.
 
-Use this skill whenever a task involves designing, implementing, redesigning, reviewing or polishing a frontend experience.
+The quality target is a production-ready product with the intentionality of a strong brand studio, a senior product-design team and a senior frontend team working together — the kind of studio a client hires because its work is never mistaken for anyone else's.
 
-This is not a "make it prettier" skill. It treats frontend work as the coordinated design and engineering of a complete digital product across:
-
-- Information architecture
-- Brand expression
-- UX and interaction design
-- Layout and visual hierarchy
-- Design systems
-- Typography
-- Component architecture
-- Motion and micro-interaction
-- Responsive behavior
-- Accessibility
-- Performance
-- Conversion and trust, when relevant
-- Frontend maintainability
-
-The quality target is a production-ready product with the intentionality of a strong brand studio, senior product-design team and senior frontend team working together.
-
-Use Awwwards, FWA and CSS Design Awards as a visual-quality reference for appropriate surfaces, never as permission to sacrifice clarity, usability, conversion, accessibility or performance.
+This file is the router. It carries the decisions that must happen before any code is written and the rules that apply everywhere. The depth lives in the reference files, and **those files are not optional** — see section 2.
 
 ---
 
-# 1. Activation Rules
+## 1. Scope and tier
 
-Apply this skill for requests such as:
+**Stand down for:** backend/API/infra work with no visual surface · pure copywriting with no layout change · a JS bug with no design dimension · refactoring with no user-visible outcome.
 
-- Design a website or page
-- Build a landing page
-- Improve or optimize a frontend
-- Redesign an existing UI
-- Make this interface more premium
-- Implement a supplied design
-- Build a corporate website
-- Build a SaaS website or SaaS application
-- Build a dashboard
-- Build an admin panel, CRM, ERP, CMS or internal tool
-- Improve responsive design
-- Improve visual hierarchy, motion or UX
-- Review frontend quality
+Everything else with a visual surface is in scope — including the one-property fix. Match effort to tier, then run only that tier's workflow. Applying an eleven-phase process to a two-line change wastes the user's time; applying a two-line fix to a page that needs a direction wastes the product.
 
-For an existing codebase, inspect the current implementation before making large design decisions whenever repository access is available.
+| Tier | Trigger | Workflow |
+|---|---|---|
+| **T1 Quick fix** | One property, one element, one obvious defect | Fix it. Do not introduce a new default while you are there (a raw hex, a raw z-index). Spot-check in the browser |
+| **T2 Component** | One component or one section | Mode check → design-system alignment → the component's contract (§7.4) → all states → responsive → a11y → verify |
+| **T3 Page** | A full page or view | Full workflow, scoped to that page, direction card included |
+| **T4 System** | Multi-page site, application shell, or design-system work | Full workflow including direction, tokens and stack adapter |
+
+When in doubt between two tiers, ask the user rather than silently escalating.
 
 ---
 
-# 2. Operate as a Multidisciplinary Team
+## 2. Mandatory reading gates
 
-Act simultaneously as:
+Do not write code for a T2 or higher task until the matching files are read. Read them; do not rely on the summaries in this file.
 
-- Creative Director
-- Brand Designer
-- Senior Product Designer
-- UX Architect
-- Design System Designer
-- Creative Developer
-- Senior Frontend Engineer
-- Accessibility Specialist
-- Performance Engineer
+| Situation | Read before writing code |
+|---|---|
+| CORPORATE mode | `modes/corporate.md` |
+| SAAS mode (either surface) | `modes/saas.md` |
+| ADMIN mode | `modes/admin.md` |
+| GENERAL / creative mode | `modes/general.md` |
+| **Any T2+ task** | `standards/anti-patterns.md` — both generations of tells, and where a signature comes from |
+| Any token, color, type-scale or component-variant decision | `standards/design-system.md` + `assets/tokens.schema.css` |
+| **The project has Tailwind, shadcn, Ant Design, Element Plus, Arco, Naive, MUI or Vuetify** | `standards/stack-adapters.md` |
+| Any layout, grid, rhythm or typography decision | `standards/layout-typography.md` |
+| **The product ships Chinese, Japanese or Korean** | `standards/cjk-typography.md` |
+| Any animation or interaction decision | `standards/motion-interaction.md` |
+| Any responsive, accessibility, performance or i18n decision | `standards/responsive-accessibility-performance.md` |
+| Light/dark theming or surface elevation | `standards/theming-dark-mode.md` |
+| Writing any user-facing text | `standards/content-copy.md` |
+| Any table, data grid or list of records | `standards/data-grid.md` |
+| Any form, input, search box or inline edit | `standards/forms.md` |
+| Any dialog, drawer, menu, tooltip, toast, tabs, command palette, header, sidebar | `standards/overlays-navigation.md` |
+| Any chart, KPI or dashboard | `standards/data-visualization.md` |
+| An authenticated product shell — sidebar, header, scrolling content | `standards/app-shell.md` + `assets/app-shell-baseline.css` |
+| A public page — images, fonts, metadata, SEO, LCP | `standards/media-seo.md` |
+| Reviewing, auditing or before declaring done | `workflow/design-review.md` |
+| T3 / T4 execution order | `workflow/design-process.md` |
+| Verifying the result | `workflow/browser-verification.md` + `scripts/` |
+| Unsure what "not generic" looks like in code | `examples/before-after-hero.md` (marketing) · `examples/before-after-admin.md` (中后台, Chinese) |
 
-Do not optimize one discipline while ignoring the others.
+**Read them as the decision arrives, not all at once.** The mode file and `standards/anti-patterns.md` come first because they shape everything after. The rest load when you reach the decision they govern.
 
-A visually impressive page with confusing UX is a failed design.
-A usable page with generic template aesthetics is unfinished.
-A polished interface that is fragile, inaccessible or slow is not production quality.
-
----
-
-# 3. Determine the Product Mode Before Designing
-
-Classify the target surface before choosing the visual language.
-
-## MODE A - CORPORATE
-
-Use for:
-
-- Enterprise websites
-- Corporate websites
-- Brand websites
-- Technology-company websites
-- Organization websites
-- Official company websites
-- High-end agency or studio sites
-
-Priority order:
-
-**Brand -> Trust -> Story -> Differentiation -> Conversion**
-
-Allow stronger typography, visual storytelling, editorial composition and motion.
-
-Read: `modes/corporate.md`
-
-## MODE B - SAAS
-
-Use for:
-
-- SaaS marketing websites
-- SaaS applications
-- AI products
-- B2B software
-- Developer tools
-- Productivity tools
-- Workflow products
-
-Marketing-surface priority:
-
-**Value Clarity -> Product Understanding -> Trust -> Activation -> Conversion**
-
-Authenticated-product priority:
-
-**Task Success -> Clarity -> Speed -> Consistency -> Discoverability**
-
-Read: `modes/saas.md`
-
-## MODE C - ADMIN
-
-Use for:
-
-- Admin panels
-- CMS
-- ERP
-- CRM
-- Internal tools
-- Enterprise dashboards
-- Operations software
-- Data-management platforms
-
-Priority order:
-
-**Efficiency -> Clarity -> Density -> Reliability -> Error Prevention -> Consistency**
-
-Experimental aesthetics must be restrained.
-
-Read: `modes/admin.md`
-
-## MODE D - GENERAL / CREATIVE
-
-Use when no specialist mode clearly dominates.
-
-Balance:
-
-**Identity -> UX -> Hierarchy -> Interaction -> Engineering**
-
-Read: `modes/general.md`
+`assets/` holds the token schema, three deliberately incompatible presets, the accessibility baseline and the app-shell baseline. Read §7.1 before using any of them. `templates/artifacts.md` has the direction card (required for T3/T4) and three optional formats.
 
 ---
 
-# 4. Hybrid Products
+## 3. Operate as a multidisciplinary team
 
-Real products often require multiple modes.
+Act simultaneously as Creative Director, Product Designer, UX Architect, Design System Designer, Senior Frontend Engineer, Accessibility Specialist and Performance Engineer. Do not optimize one discipline while ignoring the others:
 
-Examples:
-
-- SaaS public homepage: CORPORATE + SAAS Marketing
-- SaaS authenticated application: SAAS Product
-- SaaS organization settings or operations console: ADMIN
-- Documentation: GENERAL + Product
-- Investor or company pages: CORPORATE
-
-Do not force every surface into one visual intensity.
-
-Keep shared brand tokens while changing:
-
-- Information density
-- Motion intensity
-- Layout conventions
-- Decorative complexity
-- Navigation patterns
-- Component ergonomics
-
-Marketing surfaces may be expressive.
-Product surfaces should be efficient.
-Operational surfaces should be highly predictable.
+- A visually impressive page with confusing UX is a failed design.
+- A usable page with generic template aesthetics is unfinished.
+- A polished interface that is fragile, inaccessible or slow is not production quality.
+- A beautiful component that fights the host codebase is a liability.
 
 ---
 
-# 5. Existing Product Protection
+## 4. Classify the product mode
 
-Before redesigning an existing project, understand as much as available about:
+Answer three questions before choosing a visual language.
 
-- Framework and build system
-- Routing
-- Styling approach
-- Existing component library
-- Design tokens
-- State management
-- Business logic
-- API boundaries
-- Authentication and permissions
-- Responsive behavior
-- Current dependencies
+1. **Is the user authenticated?** No → marketing surface. Yes → product surface.
+2. **What is the primary job?** Persuade and convert → marketing. Complete a task → product. Operate a system at volume → operations.
+3. **What is the information density?** Editorial and sparse → expressive. Moderate → balanced. Dense tabular data → efficient.
 
-Do not unnecessarily:
+Then select:
 
-- Replace the framework
-- Rewrite working business logic
-- Change API contracts
-- Replace state management
-- Introduce large dependencies
-- Remove existing features
-- Break analytics, forms, SEO or accessibility
+| Mode | Use for | Priority order |
+|---|---|---|
+| **A · CORPORATE** | Enterprise, brand, company and agency websites | Brand → Trust → Story → Differentiation → Conversion |
+| **B · SAAS** (marketing) | SaaS/AI/B2B/devtool marketing sites, landing pages | Value clarity → Product understanding → Trust → Activation → Conversion |
+| **B · SAAS** (product) | Authenticated SaaS application UI | Task success → Clarity → Speed → Consistency → Discoverability |
+| **C · ADMIN** | Admin, CMS, ERP, CRM, internal tools, operations consoles, 中后台 | Efficiency → Clarity → Density → Reliability → Error prevention → Consistency |
+| **D · GENERAL** | Nothing above clearly dominates | Identity → UX → Hierarchy → Interaction → Engineering |
 
-Integrate visual improvements into the existing architecture whenever reasonable.
+Tie-breaks: a marketing site for an operations product → **SAAS marketing**. An authenticated dashboard whose job is monitoring, not operating → **SAAS product**. Anything where a mistake destroys or exposes real data → **ADMIN**, regardless of how it looks.
+
+State the selected mode explicitly before designing. If the user disagrees, their call wins.
+
+**If the brief does not say what the product is or who it is for, decide, say it, and confirm.** Distinctive work comes from the subject — its industry, its materials, its vocabulary. A design made without a subject is a template by definition.
 
 ---
 
-# 6. Required Workflow
+## 5. Hybrid products
 
-For meaningful redesign or implementation work, follow this sequence:
+Real products need multiple modes. A SaaS company typically has all three:
 
-1. Understand the product and target users.
-2. Identify the product mode.
-3. Inspect the existing interface and code when available.
-4. Audit the current hierarchy, layout, UX and responsive behavior.
-5. Identify the highest-impact design problems.
-6. Define a visual direction and design-system rules.
-7. Define page or application information architecture.
-8. Implement structural improvements before decorative polish.
-9. Add states, responsive behavior and accessibility.
-10. Add appropriate motion and micro-interaction.
-11. Validate performance implications.
-12. Run a final visual and UX polish pass.
-13. Run the acceptance checklist before considering the work complete.
+| Surface | Mode |
+|---|---|
+| Public homepage | CORPORATE + SAAS marketing |
+| Authenticated workspace | SAAS product |
+| Organization settings, billing, admin console | ADMIN |
+| Documentation | GENERAL + product |
+| Investor / careers / company pages | CORPORATE |
 
-Full workflow: `workflow/design-process.md`
-Review checklist: `workflow/design-review.md`
+Keep shared brand tokens across all surfaces. Change information density, motion intensity, layout conventions, decorative complexity, navigation patterns and component ergonomics. Never let marketing visual intensity leak into a dense workflow.
 
 ---
 
-# 7. Core Design Philosophy
+## 6. Protect the existing product
 
-Every major decision should be intentional.
+Before redesigning anything that exists, inspect the codebase rather than assuming: framework, build system, routing, styling approach, component library, design tokens, state management, business logic, API boundaries, auth and permissions, dependencies. `standards/stack-adapters.md` § detect lists what to read and in what order. **State what you found before proposing anything.**
 
-The design should be:
+Do not — without a reason the user has accepted — replace the framework, build system or state management; rewrite working business logic; change API contracts; add a large dependency; remove features; or break analytics, forms, SEO, routing or existing accessibility work.
 
-- Premium
-- Distinctive
-- Coherent
-- Readable
-- Responsive
-- Accessible
-- Performant
-- Maintainable
-
-Every important visual element should support at least one of:
-
-- Brand
-- Hierarchy
-- Navigation
-- Understanding
-- Storytelling
-- Interaction
-- Trust
-- Conversion
-- Feedback
-
-Remove decoration that serves none of these.
+**When the project already has a design system, that system wins.** A component library *is* a design system: shadcn, Ant Design, Element Plus, Arco, Naive, MUI, Vuetify all keep their tokens somewhere, and the roles in `assets/tokens.schema.css` map onto them in one file — never as a parallel layer. Extend, adopt, match. A skill that fights the host codebase produces a worse result than one that yields to it.
 
 ---
 
-# 8. Icon Policy
+## 7. Non-negotiable rules
 
-Use Lucide Icons consistently across the interface unless the existing product has a deliberate, coherent icon system that must be preserved.
+These apply in every mode and every tier.
 
-The default rule is:
+### 7.1 Design system before components — and derive its values
 
-- Use Lucide Icons
-- Do not use emoji in interface design
-- Do not use Unicode symbols as icon substitutes
-- Do not mix unrelated icon libraries
-- Keep size, stroke width, baseline and optical weight consistent
+Never style components one at a time. Establish or adopt a shared system for color, typography, spacing, radius, borders, elevation, motion, breakpoints, component states and density first. Components read semantic roles; they never see a raw value.
 
-Icons are functional communication tools, not random decoration.
+Start from `assets/tokens.schema.css` unless the project already has a token layer. **The schema is structure, not style.** Copy the two-layer split, the role names, the density multiplier and the z-index scale verbatim; derive every `TODO` from *this* brand, and say in your reply what you chose and why. `assets/token-presets.css` offers three incompatible starting points — take one and diverge. A preset shipped unchanged is the same failure as a default shipped unchanged, one level up.
 
----
+### 7.2 Icons — priority order
 
-# 9. Reject Generic AI UI
+1. **The project's existing icon system**, if it is coherent and deliberate. Never add a second icon library.
+2. **Lucide Icons**, when the project has no icon system and the stack supports it.
+3. Any other library only when 1 and 2 are impossible.
 
-Actively avoid interfaces that look like an unedited AI template.
+In all cases: no emoji as UI iconography, no Unicode symbols as icon substitutes, no mixed libraries; consistent size, stroke width, baseline and optical weight; `aria-hidden` on decorative icons and a label on icon-only controls.
 
-Do not default to:
+### 7.3 The specificity test — against both generations
 
-- Purple-blue gradient everywhere
-- Random glowing spheres
-- Excessive glassmorphism
-- Every element inside a rounded card
-- Excessive pill controls
-- Generic text-left / mockup-right hero
-- Repeated title + paragraph + three-card sections
-- Gradient buttons everywhere
-- Meaningless badges
-- Decorative blobs without purpose
-- Excessively large radii
-- Center-aligned everything
-- Identical section heights and rhythms
-- Generic Tailwind demo styling
-- Generic component-library demo styling
-- Low-information dashboards designed only for screenshots
+Ask: *"Could I replace the company name and use this exact page for any other company?"* Then ask the harder one: *"Would I have produced roughly this for a different brief in the same category?"*
 
-Ask during review:
+The second question catches what the first misses. Generated work that has learned to avoid the purple gradient converges on a second cluster — cream + serif + terracotta, black + one acid accent, hairline broadsheet rules, the SaaS card kit, tracked ALL-CAPS eyebrows, middle-dot meta strings, `→` glued to labels — and that cluster now reads as generated just as reliably. Both lists, with replacements and the five moves that produce a signature a competitor could not reuse, are in `standards/anti-patterns.md`. Read it before any T2+ work, and spend your boldness in exactly one place.
 
-"Could I replace the company name and use this exact page for any startup?"
+### 7.4 Every component has a contract
 
-If yes, the design is not specific enough.
+Nothing meaningful ships as the happy path only. Every component needs: default, hover, focus, active, selected, disabled, loading, empty, success, error. Applications add: first-run, no-results, offline, processing, permission-restricted, unsaved-changes. `empty` and `no-results` are different states with different actions.
 
-Read: `standards/anti-patterns.md`
+Beyond states, the core components have written contracts that the design is measured against: data grid (`standards/data-grid.md`), forms (`standards/forms.md`), overlays and navigation (`standards/overlays-navigation.md`), charts (`standards/data-visualization.md`), the shell (`standards/app-shell.md`). An interface that breaks when data is empty, slow, missing, typed through an IME, or reached by keyboard is not done.
 
----
+### 7.5 Accessibility floor
 
-# 10. Design System First
+Semantic HTML, keyboard operability, visible focus, sufficient contrast, labeled controls, ARIA only where native semantics fall short, meaningful alt text, accessible dialogs and menus, `prefers-reduced-motion` support, pinch-zoom never disabled.
 
-Do not style each component independently.
+Never remove a focus outline without replacing it with something equally visible. Never communicate state through color alone. `assets/a11y-baseline.css` is this floor as working CSS and is meant to be copied close to verbatim.
 
-Establish a shared system for:
+### 7.6 Performance budget
 
-- Color
-- Typography
-- Spacing
-- Radius
-- Borders
-- Elevation
-- Motion
-- Breakpoints
-- Component states
-- Density
+Animate `transform` and `opacity`. Protect LCP, CLS and INP. Every image has dimensions; the hero is never lazy. WebGL, Canvas, 3D and video backgrounds require a graceful fallback. Do not spend a large performance budget on an effect with small product value.
 
-Prefer semantic tokens over arbitrary hard-coded values.
+For a CJK product, the largest item in the budget is almost always an unsubsetted Chinese webfont — 3 to 10 MB. Prefer the system stack or subset by `unicode-range`.
 
-Read: `standards/design-system.md`
+### 7.7 Write real copy
+
+No lorem ipsum, no invented statistics, no "Empower your workflow with AI", no 赋能 / 一站式 / 全方位. Placeholder copy is the fastest tell that an interface was generated. Never invent a customer, logo, testimonial, certification or metric — mark the slot and say so. One name per action through the whole flow. See `standards/content-copy.md`.
+
+### 7.8 Say what is unverified
+
+Never describe a property as working that was not rendered and looked at. Never describe a preset value as "the brand color" or a placeholder as "final". The report at the end of the work lists what was verified, how, and what was not.
 
 ---
 
-# 11. Layout System
+## 8. Workflow
 
-Use a deliberate responsive layout system.
+Four phases, in order. The step-level detail is in `workflow/design-process.md` — follow it for T3 and T4.
 
-Recommended foundations:
+1. **Understand** — product, users, business goal; classify the mode and state it; inspect the existing code and name the stack.
+2. **Direct** — audit and rank problems by impact; write the direction card (`templates/artifacts.md` §0); **review it against the brief** and revise any line you would have written for any brief in the category; define tokens and information architecture.
+3. **Build** — structure and semantics, then layout, then components against their contracts, then all states, then motion, then polish. Run `scripts/lint-design.mjs` after components and after polish.
+4. **Verify** — §9, then `workflow/design-review.md`, then remove one thing.
 
-- 12-column desktop grid when appropriate
-- Fluid container widths
-- Consistent gutters
-- Clear content max-width rules
-- Strong vertical rhythm
-- Responsive grid behavior
-- Controlled readable line lengths
-
-Available composition patterns include:
-
-- Editorial layout
-- Bento grid
-- Split layout
-- Asymmetric grid
-- Full-bleed visual
-- Sticky storytelling
-- Horizontal sequence
-- Layered composition
-- Modular grid
-- Data workspace layout
-
-Do not repeat the same composition for every section.
-
-Read: `standards/layout-typography.md`
+The ordering constraint that matters most: **never begin decorative work while the information architecture is still weak.** Most frontend redesigns fail here, not in the visuals.
 
 ---
 
-# 12. Typography
+## 9. Verify in a real browser
 
-Typography should establish hierarchy before decoration is added.
+A checklist the model ticks for itself is not evidence.
 
-Define roles such as:
+Two scripts ship with the skill. Neither replaces looking:
 
-- Display
-- H1
-- H2
-- H3
-- H4
-- Title
-- Body
-- Body Small
-- Label
-- Caption
-- Data / Numeric
+- `node scripts/lint-design.mjs <paths> [--cjk]` — static scan for raw colors, raw z-index, removed focus outlines, tiny type, `transition: all`, `100vh`, placeholder and banned copy, emoji icons, missing `alt`, unlabeled inputs, `Enter` handlers with no IME guard, template chrome. Zero dependencies.
+- `node scripts/verify-browser.mjs <url> [--axe]` — Playwright: screenshots at 375/768/1440/1920 in both themes, horizontal-overflow report, console and failed requests, heading outline, unlabeled controls, a Tab walk that flags invisible focus, lab LCP/CLS, axe violations. Writes `report.md` with what it checked **and what it did not**.
 
-Control:
+When browser tooling is available — the script, Chrome DevTools MCP, Playwright MCP, or a dev server — **render the result and look at it before claiming it works.** At minimum: console clean, screenshots at four widths, no horizontal overflow, keyboard path walked, both themes checked, and the empty/loading/error states forced into view rather than assumed.
 
-- Font size
-- Font weight
-- Line height
-- Letter spacing
-- Measure
-- Contrast
-- Responsive scaling
-
-Use fluid typography such as `clamp()` where appropriate.
-
-Corporate and marketing surfaces may use oversized or editorial typography.
-Product and admin surfaces should prioritize scanability and operational efficiency.
+If no browser tooling is available, say so and label the work **unverified**.
 
 ---
 
-# 13. Page Rhythm
+## 10. Acceptance gate
 
-A premium page should feel composed rather than stacked.
+Do not report the work as complete until all four hold.
 
-Vary:
+| Dimension | Requirement |
+|---|---|
+| **Visual** | Distinctive, premium, coherent, intentional — and not the category default of either generation |
+| **UX** | Clear, fast, predictable, accessible; every component meets its contract |
+| **Engineering** | Reusable, maintainable, responsive, performant; one source of truth per value; fits the host stack |
+| **Product** | Clear value, clear hierarchy, clear state, clear next action |
 
-- Density
-- Whitespace
-- Text scale
-- Media scale
-- Grid structure
-- Background treatment
-- Motion intensity
+Then run `workflow/design-review.md`. The four questions that catch the most:
 
-Think in narrative stages:
+- Would this design belong unchanged to any competitor, or to any brief in this category? → strengthen the direction.
+- Does it still work when data is empty, loading, broken, or typed in Chinese? → finish the states.
+- Can a keyboard user complete the primary workflow? → fix it before shipping.
+- Is there one thing that could be removed? → remove it.
 
-**Intro -> Build-up -> Proof -> Exploration -> Visual Peak -> Resolution -> CTA**
-
-Not every page requires all stages, but long pages should have deliberate pacing.
-
----
-
-# 14. Motion Strategy
-
-Use motion as part of the design language, not decoration added at the end.
-
-Preferred techniques when appropriate:
-
-- Natural easing
-- Spring motion
-- Stagger
-- Fade / translate
-- Blur reveal
-- Mask reveal
-- Clip reveal
-- Scroll-linked motion
-- Parallax
-- Magnetic interaction
-- Cursor interaction
-- SVG motion
-
-Intensity by surface:
-
-- Corporate / campaign: medium to high when justified
-- SaaS marketing: medium
-- SaaS application: low to medium
-- Admin: low
-
-Avoid:
-
-- Bounce everywhere
-- Constant motion
-- Slow interaction-blocking transitions
-- Large hover zooms
-- Unnecessary page transitions
-- Animation on every visible element
-
-Always support reduced-motion preferences.
-
-Read: `standards/motion-interaction.md`
-
----
-
-# 15. State Completeness
-
-Never design only the ideal state.
-
-For important components consider:
-
-- Default
-- Hover
-- Focus
-- Active
-- Selected
-- Disabled
-- Loading
-- Empty
-- Success
-- Warning
-- Error
-- Partial / degraded
-- Permission-restricted when relevant
-
-For applications also consider:
-
-- First-run
-- Offline
-- No results
-- Archived
-- Draft
-- Processing
-- Unsaved changes
-
----
-
-# 16. Responsive Design
-
-Design explicitly for:
-
-- Wide desktop
-- Desktop
-- Laptop
-- Tablet
-- Mobile
-
-Mobile is not a scaled desktop page.
-
-Re-evaluate on smaller screens:
-
-- Content order
-- Navigation
-- Typography
-- Grid
-- Visual hierarchy
-- CTA placement
-- Tables
-- Forms
-- Drawers and dialogs
-- Sticky elements
-- Charts
-- Motion
-- Touch targets
-
-Prevent accidental horizontal overflow.
-
-Read: `standards/responsive-accessibility-performance.md`
-
----
-
-# 17. Accessibility
-
-Premium design includes accessibility.
-
-Use:
-
-- Semantic HTML
-- Keyboard navigation
-- Visible focus states
-- Appropriate contrast
-- Labels for form controls
-- ARIA only when semantics are insufficient
-- Alt text for meaningful images
-- Accessible dialog and menu behavior
-- Screen-reader-compatible status feedback
-- Reduced-motion support
-
-Do not remove focus outlines unless replacing them with an equally visible or better focus treatment.
-
----
-
-# 18. Performance
-
-Protect Core Web Vitals and interaction responsiveness.
-
-Prefer animation with:
-
-- `transform`
-- `opacity`
-
-Avoid unnecessary:
-
-- Layout thrashing
-- Large DOM trees
-- Client-side JavaScript
-- Heavy animation dependencies
-- Huge media assets
-- Unoptimized web fonts
-
-Prefer:
-
-- Responsive images
-- AVIF / WebP where supported
-- Lazy loading below the fold
-- Code splitting
-- Progressive loading
-- Stable media aspect ratios
-
-WebGL, Canvas, 3D and video backgrounds require graceful fallbacks.
-
-Do not spend major performance budget on effects that add little product value.
-
----
-
-# 19. Component Architecture
-
-Prefer composable reusable components with controlled variants.
-
-Common primitives include:
-
-- Button
-- IconButton
-- Input
-- Textarea
-- Select / Combobox
-- Checkbox / Radio / Switch
-- Tabs
-- Accordion
-- Dropdown
-- Tooltip
-- Popover
-- Dialog
-- Drawer
-- Toast
-- Card when semantically appropriate
-- Table / DataGrid
-- Pagination
-- Breadcrumb
-- Navigation
-- Sidebar
-- PageHeader
-- EmptyState
-- ErrorState
-- Skeleton
-- CommandMenu
-
-Do not duplicate the same pattern across pages with slightly different CSS.
-
----
-
-# 20. Engineering Rules
-
-Prefer:
-
-- Semantic HTML
-- CSS variables
-- Design tokens
-- Typed props
-- Variant APIs
-- Reusable layout primitives
-- Modular components
-- Clear state ownership
-- Maintainable styling
-
-Avoid:
-
-- Magic numbers everywhere
-- Giant monolithic components
-- Repeated markup
-- Repeated CSS
-- Unnecessary inline styles
-- Fragile absolute positioning
-- Deep nesting without purpose
-- One-off hacks that break responsive behavior
-
-Before adding a dependency, determine whether the project already has a suitable solution.
-
----
-
-# 21. Corporate Mode Summary
-
-When CORPORATE mode is active:
-
-Increase:
-
-- Brand expression
-- Trust architecture
-- Editorial composition
-- Typography scale
-- Storytelling
-- Signature visuals
-- Whitespace
-- Motion where appropriate
-
-Prioritize clear communication of:
-
-1. Who the company is
-2. What it does
-3. Why it matters
-4. Why it can be trusted
-5. What action the user should take
-
-Use 1-3 recurring signature visual elements across the site.
-
-Do not hide the business behind artistic ambiguity.
-
-Full rules: `modes/corporate.md`
-
----
-
-# 22. SaaS Mode Summary
-
-For SaaS marketing:
-
-Prioritize:
-
-- Concrete value proposition
-- Real product visuals
-- Workflow understanding
-- Use cases
-- Integrations
-- Social proof
-- Security
-- Pricing clarity
-- Conversion
-
-For authenticated SaaS product UI:
-
-Prioritize:
-
-- Task completion
-- Clear navigation
-- Fast workflows
-- State feedback
-- Onboarding
-- Empty / loading / error states
-- Search and discoverability
-
-Marketing visual intensity must not leak blindly into productivity surfaces.
-
-Full rules: `modes/saas.md`
-
----
-
-# 23. Admin Mode Summary
-
-For admin and enterprise operational tools:
-
-Prioritize:
-
-- Efficiency
-- Scanability
-- Information density
-- Reliability
-- Error prevention
-- Permission clarity
-- Table and form quality
-
-Spend more design effort on:
-
-- Data grids
-- Filters
-- Forms
-- Bulk actions
-- Workflow state
-- Permissions
-- Saved views
-- Search
-
-than on decorative dashboard visuals.
-
-Full rules: `modes/admin.md`
-
----
-
-# 24. Final Polish Pass
-
-Never stop at "it works."
-
-Check for:
-
-- 1px alignment problems
-- Inconsistent spacing
-- Inconsistent radius
-- Icon baseline issues
-- Text wrapping
-- Poor line lengths
-- Weak CTA hierarchy
-- Missing hover / focus states
-- Button height inconsistencies
-- Form spacing
-- Table alignment
-- Mobile spacing
-- Header behavior
-- Overflow
-- Z-index problems
-- Sticky-positioning issues
-- Loading layout shift
-- Unnecessary animation
-- Broken reduced-motion behavior
-
----
-
-# 25. Acceptance Standard
-
-Do not consider the frontend complete until it satisfies all four dimensions.
-
-## Visual
-
-- Distinctive
-- Premium
-- Coherent
-- Intentional
-
-## UX
-
-- Clear
-- Fast
-- Predictable
-- Accessible
-
-## Engineering
-
-- Reusable
-- Maintainable
-- Responsive
-- Performant
-
-## Business / Product
-
-- Clear value
-- Clear hierarchy
-- Clear trust or state
-- Clear next action
-
----
-
-# 26. Final Questions Before Shipping
-
-Ask:
-
-- What should the user understand first?
-- What deserves the strongest visual emphasis?
-- What can be removed?
-- Is the next action obvious?
-- Does the page have a recognizable identity?
-- Does the interface still work when data is empty, loading or broken?
-- Does mobile feel intentionally designed?
-- Can keyboard users complete the workflow?
-- Are motion and visual effects worth their performance cost?
-- Could this design belong unchanged to any random company?
-
-If the final answer to the last question is yes, strengthen the design direction.
-
-The target result should feel intentionally art-directed, product-designed, engineered and polished by an experienced multidisciplinary digital team rather than generated from a generic UI template.
+The target result should feel art-directed, product-designed, engineered and polished by an experienced multidisciplinary team — not generated from a template, and not generated from the anti-template either.
