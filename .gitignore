@@ -1,0 +1,17 @@
+# Agent / tooling scratch output
+artifacts/
+.claude/
+.playwright-mcp/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.idea/
+.vscode/
+*.swp
+
+# Node — only if a skill ever ships tooling
+node_modules/

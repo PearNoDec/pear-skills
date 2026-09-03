@@ -2,7 +2,7 @@
 
 # pear-skills
 
-![skills](https://img.shields.io/badge/skills-1-8A2BE2) ![premium-frontend-design](https://img.shields.io/badge/premium--frontend--design-1.0.0-blue)
+![skills](https://img.shields.io/badge/skills-1-8A2BE2) ![license](https://img.shields.io/badge/license-MIT-blue)
 
 **A curated collection of AI coding agent skills.**
 
@@ -25,7 +25,7 @@ A good skill typically has:
 
 | Skill | Version | Description |
 | ----- | :-----: | ----------- |
-| [premium-frontend-design](./premium-frontend-design) | 1.0.0 | Enterprise-grade frontend design and implementation skill for corporate websites, SaaS products, dashboards and admin systems |
+| [premium-frontend-design](./premium-frontend-design) | 3.0.0 | Enterprise-grade frontend design and implementation skill for corporate websites, SaaS products, dashboards and admin systems |
 
 ## Installation
 
@@ -48,9 +48,21 @@ After restarting your session, just describe the task in natural language, e.g. 
 
 ```text
 pear-skills/
+├── LICENSE
 └── premium-frontend-design/   # Enterprise-grade frontend design skill
 ```
+
+> [!IMPORTANT]
+> `assets/tokens.schema.css` ships **structure, not values**. A token file with a
+> working palette gets copied verbatim, and then every project built from it looks
+> the same — which is the failure this skill exists to prevent, just relocated one
+> level up. Copy the architecture; derive the values from your brand. See the skill's
+> [README](./premium-frontend-design/README.md#the-assets-are-structure-not-style).
 
 ## Roadmap
 
 New skills are added continuously — planned areas include security testing, code auditing, reverse engineering and documentation generation. Star the repo to stay tuned.
+
+## License
+
+[MIT](./LICENSE)
