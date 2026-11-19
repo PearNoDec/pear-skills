@@ -24,6 +24,8 @@ Read this before injecting into a BT Panel terminal page.
 
 Read `scripts/inject-bt.js` and pass its entire contents as the `function` argument of `evaluate_script`. It installs `window.__btTerm` and the unified `window.__term`.
 
+Since v3, socket state is re-read live (`sockOf()` + recursive `unref`) and judged by `ws.readyState`, so a page that has reconnected can call `run()` directly.
+
 The injector first walks the common Pinia shape (`store.$state.<dict> = { 'terminal-xxx': refObj }`). If that misses, it shallow-scans every store's state (depth 4) for objects with `write` + `buffer` — that recursive scan is the resilience you keep it for.
 
 The script exposes:
@@ -54,3 +56,4 @@ async () => await window.__term.run('systemctl status php-fpm-84 --no-pager')
 5. **A page reload / route change rebuilds the store**: injection stops working; just re-inject.
 6. **Multiple tabs**: keys look like `terminal-FAsAxbfF`; the first one is used by default.
 7. **Interactive programs** (vim/htop/top): content never settles → use `read()` to look at the screen, not `run()`.
+8. **The socket wrapper is replaced on reconnect**: `socketInfo().socket` may return a new wrapper on every call, so the `t.sock` cached at injection time goes stale and `status` keeps reporting the old value (the actual ws is OPEN but the script says `UNKNOWN`). Since v3, `sockOf()` re-reads it live and `ws.readyState` decides the state; on v2 a reconnected page makes `run()` fail with `socket not OPEN: UNKNOWN` — either send through `t.sock.send()` or upgrade the injector.

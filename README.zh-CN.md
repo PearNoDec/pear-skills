@@ -26,7 +26,7 @@ Skill 是一种模块化的智能体能力扩展：一个以 `SKILL.md` 为入�
 | 技能 | 版本 | 简介 |
 | ---- | :--: | ---- |
 | [premium-frontend-design](./premium-frontend-design) | 3.0.0 | 企业级前端设计与实现技能，覆盖官网、SaaS、后台管理系统等场景 |
-| [panel-terminal](./panel-terminal) | 1.0.0 | 宝塔 / 1Panel 终端无截图读写：直接读 xterm 文本，走面板自己的 WebSocket 发命令 |
+| [panel-terminal](./panel-terminal) | 1.1.0 | 宝塔 / 1Panel 终端无截图读写：直接读 xterm 文本，走面板自己的 WebSocket 发命令 |
 
 ## 安装使用
 

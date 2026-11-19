@@ -1,22 +1,37 @@
 () => {
   // BT Panel xterm terminal controller: injects window.__btTerm
   // Usage: chrome-devtools MCP → evaluate_script({ pageId, function: <contents of this file> })
-  if (window.__btTerm && window.__btTerm.version >= 2) {
+  // v3: socket state is re-read live with recursive unref; fixes the false "UNKNOWN" after BT reconnects
+  if (window.__btTerm && window.__btTerm.version >= 3) {
     return { already: true, tabs: window.__btTerm.tabs() };
   }
+  delete window.__btTerm; delete window.__term;
 
-  const VERSION = 2;
+  const VERSION = 3;
 
   const isTerm = v => v && typeof v === 'object' &&
     typeof v.write === 'function' && typeof v.onData === 'function' &&
     v.buffer && v.buffer.active && typeof v.buffer.active.getLine === 'function';
+
+  // Recursively unwrap Vue refs / proxies carrying _value / _rawValue until a bare WebSocket with readyState
+  const unref = (v, n) => {
+    n = n || 0;
+    while (v && typeof v === 'object' && n++ < 5) {
+      if (v.readyState !== undefined) return v;
+      if (v.value !== undefined && v.value !== v) { v = v.value; continue; }
+      if (v._value !== undefined && v._value !== v) { v = v._value; continue; }
+      if (v._rawValue !== undefined && v._rawValue !== v) { v = v._rawValue; continue; }
+      break;
+    }
+    return v;
+  };
 
   const findApp = () => {
     const cands = [document.getElementById('root')];
     for (const el of document.querySelectorAll('[data-v-app]')) cands.push(el);
     cands.push(document.body, document.documentElement);
     for (const el of cands) if (el && el.__vue_app__) return el.__vue_app__;
-    for (const el of document.querySelectorAll('div')) if (el.__vue_app__) return el.__vue_app__;
+    for (const el of document.querySelectorAll('div')) if (el && el.__vue_app__) return el.__vue_app__;
     return null;
   };
 
@@ -46,7 +61,7 @@
     for (const k of ['socketInfo', 'getSocket', 'socket']) {
       try {
         const s = typeof ref[k] === 'function' ? ref[k]() : ref[k];
-        if (s && typeof s.send === 'function') return s;
+        if (s && typeof s.send === 'function' && s.ws) return s;
         if (s && s.socket && typeof s.socket.send === 'function') return s.socket;
       } catch (e) {}
     }
@@ -64,7 +79,7 @@
     const term = asTerm(ref);
     if (!term) return;
     seen.add(ref);
-    tabs.push({ id: String(id), term, sock: asSock(ref) });
+    tabs.push({ id: String(id), ref, term, sock: asSock(ref) });
   };
 
   // 1) Common shape: some store.$state.<dict> = { 'terminal-xxx': refObj }
@@ -103,36 +118,49 @@
     return a.join('\n');
   };
 
-  const pick = id => {
-    if (id === undefined || id === null) return tabs[0];
-    return tabs.find(t => t.id === String(id)) || (typeof id === 'number' ? tabs[id] : null) || tabs[0];
+  const pick = id => (id === undefined || id === null) ? tabs[0]
+    : (tabs.find(t => t.id === String(id)) || (typeof id === 'number' ? tabs[id] : null) || tabs[0]);
+
+  // Re-read the socket on every call: after a BT reconnect the store wrapper may be replaced wholesale,
+  // so the socket cached at injection time goes stale
+  const sockOf = t => {
+    if (!t) return null;
+    if (t.ref) { const s = asSock(t.ref); if (s) return s; }
+    return t.sock;
   };
 
-  // sock.ws may be a Vue ref in some BT versions, or a bare WebSocket
   const rawWs = t => {
-    const w = t && t.sock && t.sock.ws;
-    if (!w) return null;
-    if (typeof w.send === 'function') return w;          // bare WebSocket
-    return w.value && typeof w.value.send === 'function' ? w.value : null;
+    const s = sockOf(t);
+    if (!s) return null;
+    const w = unref(s.ws);
+    return w && typeof w.send === 'function' ? w : null;
   };
+
   const statusOf = t => {
     const ws = rawWs(t);
-    if (ws && ws.readyState === 1) return 'OPEN';
-    const s = t && t.sock && t.sock.status;
-    const sv = s && (s.value !== undefined ? s.value : s);
+    if (ws) {
+      if (ws.readyState === 1) return 'OPEN';
+      if (ws.readyState === 0) return 'CONNECTING';
+      if (ws.readyState === 2) return 'CLOSING';
+      if (ws.readyState === 3) return 'CLOSED';
+    }
+    const s = sockOf(t);
+    const sv = unref(s && s.status);
     if (sv) return String(sv);
+    const wv = unref(s && s.ws);
+    if (wv && typeof wv.readyState === 'number') return 'readyState=' + wv.readyState;
     return 'UNKNOWN';
   };
 
   const waitOpen = async (t, ms) => {
     const t0 = Date.now();
-    let opened = false;
     while (Date.now() - t0 < ms) {
-      if (statusOf(t) === 'OPEN') { opened = true; break; }
-      if (t && t.sock && typeof t.sock.open === 'function') { try { t.sock.open(); } catch (e) {} }
+      if (statusOf(t) === 'OPEN') return true;
+      const s = sockOf(t);
+      if (s && typeof s.open === 'function') { try { s.open(); } catch (e) {} }
       await new Promise(z => setTimeout(z, 250));
     }
-    return opened;
+    return statusOf(t) === 'OPEN';
   };
 
   const api = {
@@ -144,7 +172,7 @@
       rows: t.term.rows,
       scrollback: t.term.buffer.active.baseY,
       status: statusOf(t),
-      hasSocket: !!t.sock
+      hasSocket: !!sockOf(t)
     })),
 
     // read: visible screen + scrollback as plain text (ANSI already consumed by xterm)
@@ -155,14 +183,15 @@
       const o = Object.assign({ wait: 8000 }, opts || {});
       const t = pick(id);
       if (!t) return { ok: false, reason: 'no terminal' };
-      if (!t.sock) return { ok: false, reason: 'no socket' };
       const line = String(cmd).replace(/\r/g, '').replace(/\n/g, '\r') + '\r';
 
-      if (!(await waitOpen(t, o.wait))) return { ok: false, reason: 'socket not OPEN: ' + statusOf(t) };
-
-      for (let i = 0; i < 3; i++) {
-        try { if (t.sock.send(line)) return { ok: true, id: t.id, via: 'sock' }; } catch (e) {}
-        await new Promise(z => setTimeout(z, 250));
+      const opened = await waitOpen(t, o.wait);
+      const s = sockOf(t);
+      if (s && (opened || statusOf(t) === 'OPEN')) {
+        for (let i = 0; i < 3; i++) {
+          try { if (s.send(line)) return { ok: true, id: t.id, via: 'sock' }; } catch (e) {}
+          await new Promise(z => setTimeout(z, 250));
+        }
       }
       // fallback: hit the bare WebSocket directly (field-tested: the server accepts text frames)
       const ws = rawWs(t);
@@ -201,9 +230,7 @@
 
     // Capture raw ws frames (including ANSI); fallback when the store shape drifts
     raw: (on) => {
-      const t = pick(null);
-      if (!t || !t.sock) return { ok: false, reason: 'no socket' };
-      const ws = rawWs(t);
+      const t = pick(null), ws = t && rawWs(t);
       if (!ws) return { ok: false, reason: 'no raw ws' };
       if (!on) {
         if (ws.__btRaw) { ws.onmessage = ws.__btRaw.orig; delete ws.__btRaw; }
@@ -224,10 +251,8 @@
     },
 
     rawText: () => {
-      const t = pick(null);
-      if (!t || !t.sock) return '';
-      const ws = rawWs(t);
-      return (ws && ws.__btRaw) ? ws.__btRaw.buf.join('') : '';
+      const t = pick(null), ws = t && rawWs(t);
+      return ws && ws.__btRaw ? ws.__btRaw.buf.join('') : '';
     }
   };
 

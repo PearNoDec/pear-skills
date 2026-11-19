@@ -4,7 +4,7 @@ description: Screenshot-free read/write channel for hosting-panel terminals (BT 
 license: MIT
 metadata:
   author: pearno
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # panel-terminal · Direct terminal read/write (BT Panel + 1Panel)

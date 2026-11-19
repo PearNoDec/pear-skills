@@ -26,7 +26,7 @@ A good skill typically has:
 | Skill | Version | Description |
 | ----- | :-----: | ----------- |
 | [premium-frontend-design](./premium-frontend-design) | 3.0.0 | Enterprise-grade frontend design and implementation skill for corporate websites, SaaS products, dashboards and admin systems |
-| [panel-terminal](./panel-terminal) | 1.0.0 | Screenshot-free terminal read/write for BT Panel and 1Panel — read xterm text and send commands over the panel's own WebSocket |
+| [panel-terminal](./panel-terminal) | 1.1.0 | Screenshot-free terminal read/write for BT Panel and 1Panel — read xterm text and send commands over the panel's own WebSocket |
 
 ## Installation
 
