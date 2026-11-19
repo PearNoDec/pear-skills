@@ -2,7 +2,7 @@
 
 # pear-skills
 
-![skills](https://img.shields.io/badge/skills-1-8A2BE2) ![license](https://img.shields.io/badge/license-MIT-blue)
+![skills](https://img.shields.io/badge/skills-2-8A2BE2) ![license](https://img.shields.io/badge/license-MIT-blue)
 
 **A curated collection of AI coding agent skills.**
 
@@ -26,6 +26,7 @@ A good skill typically has:
 | Skill | Version | Description |
 | ----- | :-----: | ----------- |
 | [premium-frontend-design](./premium-frontend-design) | 3.0.0 | Enterprise-grade frontend design and implementation skill for corporate websites, SaaS products, dashboards and admin systems |
+| [panel-terminal](./panel-terminal) | 1.0.0 | Screenshot-free terminal read/write for BT Panel and 1Panel — read xterm text and send commands over the panel's own WebSocket |
 
 ## Installation
 
@@ -49,15 +50,18 @@ After restarting your session, just describe the task in natural language, e.g. 
 ```text
 pear-skills/
 ├── LICENSE
-└── premium-frontend-design/   # Enterprise-grade frontend design skill
+├── premium-frontend-design/   # Enterprise-grade frontend design skill
+└── panel-terminal/            # Browser-panel terminal read/write channel (BT / 1Panel)
+    ├── SKILL.md               # Entry point: API, detection, workflow, fallback ladder
+    ├── references/            # 1panel.md, bt-panel.md — protocol and pitfalls
+    └── scripts/               # inject-1panel.js, inject-bt.js — full injectors
 ```
 
 > [!IMPORTANT]
 > `assets/tokens.schema.css` ships **structure, not values**. A token file with a
 > working palette gets copied verbatim, and then every project built from it looks
 > the same — which is the failure this skill exists to prevent, just relocated one
-> level up. Copy the architecture; derive the values from your brand. See the skill's
-> [README](./premium-frontend-design/README.md#the-assets-are-structure-not-style).
+> level up. Copy the architecture; derive the values from your brand.
 
 ## Roadmap
 

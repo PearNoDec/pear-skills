@@ -2,7 +2,7 @@
 
 # pear-skills
 
-![skills](https://img.shields.io/badge/skills-1-8A2BE2) ![license](https://img.shields.io/badge/license-MIT-blue)
+![skills](https://img.shields.io/badge/skills-2-8A2BE2) ![license](https://img.shields.io/badge/license-MIT-blue)
 
 **一个专门分享 AI 编程代理技能（Skills）的集合项目。**
 
@@ -26,6 +26,7 @@ Skill 是一种模块化的智能体能力扩展：一个以 `SKILL.md` 为入�
 | 技能 | 版本 | 简介 |
 | ---- | :--: | ---- |
 | [premium-frontend-design](./premium-frontend-design) | 3.0.0 | 企业级前端设计与实现技能，覆盖官网、SaaS、后台管理系统等场景 |
+| [panel-terminal](./panel-terminal) | 1.0.0 | 宝塔 / 1Panel 终端无截图读写：直接读 xterm 文本，走面板自己的 WebSocket 发命令 |
 
 ## 安装使用
 
@@ -49,22 +50,25 @@ npx skills add PearNoDec/pear-skills
 ```text
 pear-skills/
 ├── LICENSE
-└── premium-frontend-design/   # 企业级前端设计与实现技能
-    ├── SKILL.md               # 入口，负责分流到下面所有文件
-    ├── assets/                # Token 结构骨架、三套互斥风格预设、无障碍基线
-    ├── modes/                 # 官网 / SaaS / 中后台 / 通用创意
-    ├── standards/             # 设计系统、布局排版、中日韩排版、动效、主题、
-    │                          #   文案、数据表格、反模式
-    ├── workflow/              # 流程、评审清单、浏览器验证回路
-    ├── templates/             # 简报 / 计划 / 报告，均为可选
-    └── examples/              # 一个带真实代码的 before/after 示例
+├── premium-frontend-design/   # 企业级前端设计与实现技能
+│   ├── SKILL.md               # 入口，负责分流到下面所有文件
+│   ├── assets/                # Token 结构骨架、三套互斥风格预设、无障碍基线
+│   ├── modes/                 # 官网 / SaaS / 中后台 / 通用创意
+│   ├── standards/             # 设计系统、布局排版、中日韩排版、动效、主题、
+│   │                          #   文案、数据表格、反模式
+│   ├── workflow/              # 流程、评审清单、浏览器验证回路
+│   ├── templates/             # 简报 / 计划 / 报告，均为可选
+│   └── examples/              # 一个带真实代码的 before/after 示例
+└── panel-terminal/            # 面板终端读写通道（宝塔 / 1Panel）
+    ├── SKILL.md               # 入口：API、面板判别、工作流、兜底阶梯
+    ├── references/            # 1panel.md / bt-panel.md —— 协议细节与坑
+    └── scripts/               # inject-1panel.js / inject-bt.js —— 完整注入器
 ```
 
 > [!IMPORTANT]
 > `assets/tokens.schema.css` 提供的是**结构，不是数值**。一份带完整配色的 token 文件
 > 会被原样复制，于是所有基于它的项目长得一模一样 —— 这正是本技能要避免的问题，只是
 > 从「AI 模板味」变成了「本技能味」。架构照抄，数值必须从项目品牌推导。
-> 详见技能自带的 [README](./premium-frontend-design/README.md#the-assets-are-structure-not-style)。
 
 > [!TIP]
 > 面向中文产品时，`standards/cjk-typography.md` 是必读项：行高、字重合成（假粗）、
